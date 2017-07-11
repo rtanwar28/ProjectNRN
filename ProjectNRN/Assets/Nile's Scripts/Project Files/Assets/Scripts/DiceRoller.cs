@@ -79,7 +79,7 @@ public class DiceRoller : MonoBehaviour
         if (dieRoll == true)
         {
             dice.GetComponent<Transform>().position = diceDropPosition.GetComponent<Transform>().position;
-            dieSpeed = dice.GetComponent<Rigidbody>().AddForce(rollingForc);
+            dice.GetComponent<Rigidbody>().AddForce(rollingForce);
             dieRoll = false;
         }
 
