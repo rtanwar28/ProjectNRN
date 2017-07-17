@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Nile's Project Files/Project Files/Assets/Scene/TestGameScene.unity
+- path: Assets/Nabeeha's Project Files/newwwwwwwwwwwwScne.unity
   isLoaded: 1
   isActive: 1
