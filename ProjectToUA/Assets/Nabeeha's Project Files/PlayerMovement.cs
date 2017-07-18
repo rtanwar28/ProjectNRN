@@ -7,28 +7,29 @@ public class PlayerMovement : MonoBehaviour {
 
     public GameObject startTile;
     int diceNumber;
-    public Text diceText;
-    public float step;
-    public GameObject optionTilePanel;
-    public bool stepIsZero, leftRotate, rightRotate, upRotate, diceRolled;
+    Text diceText;
+    float step;
+    //GameObject optionTilePanel;
+   	bool stepIsZero, leftRotate, rightRotate, upRotate, diceRolled;
     Rigidbody myRB;
     Vector3 myTransform; 
 
     private void Awake()
     {
+		startTile = GameObject.FindGameObjectWithTag ("startTile");
         myRB = GetComponent<Rigidbody>();
     }
     // Use this for initialization
     void Start ()
     {
-        optionTilePanel.SetActive(false);
+        //optionTilePanel.SetActive(false);
 
         leftRotate = false;
         rightRotate = false;
         upRotate = false;
         diceRolled = false;
 
-        this.transform.position = Vector3.Lerp(transform.position, Vector3.zero, 1f);
+        //this.transform.position = Vector3.Lerp(transform.position, Vector3.zero, 1f);
         Debug.Log("lerping... but not really");
 
     }        
@@ -42,7 +43,7 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    private void FixedUpdate()
+	/*private void FixedUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -60,26 +61,31 @@ public class PlayerMovement : MonoBehaviour {
             MoveForward();
         }
     }
-
-    private void OnTriggerStay(Collider other)
+*/
+	/* private void OnTriggerStay(Collider other)
     {
         if (other.tag == "startTile" && diceRolled)
         {
             Debug.Log("collided with start tile");
             MoveForward();
         }
-    }
+    }*/
 
     private void OnTriggerEnter(Collider other)
     {
         if (diceRolled)
         {
+			if (other.tag == "startTile")
+			{
+				Debug.Log("collided with start tile");
+				MoveForward();
+			}
             if (step > 0)
             {
                 if (other.tag == "upTile")
                 {
-                    MoveForward();
-                    Debug.Log("moving forwarddddd");
+					Debug.Log("moving forwarddddd");
+                    MoveForward();      
                 }
 
                 else if (other.tag == "leftTile")
@@ -98,7 +104,7 @@ public class PlayerMovement : MonoBehaviour {
 
                 else if (other.tag == "optionTile")
                 {
-                    optionTilePanel.SetActive(true);
+                   // optionTilePanel.SetActive(true);
                     Debug.Log("collided with option tile");
                 }
             }
@@ -108,7 +114,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private void OnTriggerExit(Collider other)
     {
-        optionTilePanel.SetActive(false);
+       // optionTilePanel.SetActive(false);
     }
 
     //public void CloseOptionPanel()
@@ -120,9 +126,10 @@ public class PlayerMovement : MonoBehaviour {
     {
       
             diceNumber = Random.Range(1, 7);
-            diceText.text = "" + diceNumber;
+            //diceText.text = "" + diceNumber;
        
-        step = float.Parse(diceText.text);
+       // step = float.Parse(diceText.text);
+		step = diceNumber;
         Debug.Log("step: " + step);
 
         diceRolled = true;

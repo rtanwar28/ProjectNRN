@@ -17,7 +17,7 @@ using UnityEngine;
 public class TurnHandler : MonoBehaviour
 {
     public int numOfPlayers;
-    public GameObject[] playerOrder;
+	public GameObject[] playerOrder = new GameObject[4];
     public GameObject interactionUI;
     public GameObject movementUI;
     public GameObject eventUI;
