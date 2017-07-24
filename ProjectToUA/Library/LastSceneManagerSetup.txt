@@ -1,4 +1,8 @@
 sceneSetups:
+<<<<<<< Updated upstream
 - path: Assets/Nabeeha's Project Files/Scenes/playerStats.unity
+=======
+- path: Assets/RT FOLDER/Scene/MapScene.unity
+>>>>>>> Stashed changes
   isLoaded: 1
   isActive: 1
