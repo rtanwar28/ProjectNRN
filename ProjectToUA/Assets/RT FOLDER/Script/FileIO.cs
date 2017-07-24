@@ -9,8 +9,10 @@ public class FileIO : MonoBehaviour
 
 	StreamReader sr;
 	public char[,] boardMap;
+    public Vector3 playerStartPos;
 
-	int j, k, randomRotInt;
+
+    int j, k, randomRotInt;
 
 	public List<Transform> prefabTransforms;
 
@@ -102,9 +104,14 @@ public class FileIO : MonoBehaviour
 		}
 
 		Transform startTileTransform = prefabTransforms[94]; //Select the tile to instantiate player on from 'prefabTransform' list.
-		Vector3 playerStartPos = startTileTransform.position + new Vector3(0f,1.75f,0f); //To figure out later
-		Instantiate (playerPrefab, playerStartPos, Quaternion.identity);
+		playerStartPos = startTileTransform.position + new Vector3(0f,1.75f,0f); //To figure out later
+		//Instantiate (playerPrefab, playerStartPos, Quaternion.identity);
 
 
 	}
+
+    public Vector3 GetPlayerSPostion()
+    {
+        return playerStartPos;
+    }
 }

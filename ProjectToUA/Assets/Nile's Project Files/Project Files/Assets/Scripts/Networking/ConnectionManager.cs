@@ -20,12 +20,14 @@ namespace NRN.Tales
 		static public ConnectionManager Instance;
 
 		public GameObject playerObject;
+        public Vector3 playerPosition;
 
 		#endregion
 
 		#region Private Variables
 
 		private GameObject instance;
+        int Pcount = 0;
 
 		#endregion
 
@@ -36,7 +38,7 @@ namespace NRN.Tales
 
 			if(!PhotonNetwork.connected)
 			{
-				SceneManager.LoadScene ("TEST SCENE");
+				SceneManager.LoadScene ("MapScene");
 				return;
 			}
 
@@ -48,8 +50,10 @@ namespace NRN.Tales
 			{
 				if (TestPlayer.LocalPlayerInstance == null) 
 				{
-					Debug.Log("We are Instantiating LocalPlayer from " + SceneManagerHelper.ActiveSceneName);
-					PhotonNetwork.Instantiate (this.playerObject.name, new Vector3 (32f, -40f, 190f), Quaternion.identity, 0);
+					Debug.Log("We are Instantiating LocalPlayer from " + SceneManagerHelper.ActiveSceneName + " " + Pcount);
+                    playerPosition = GameObject.Find("Map Generator").GetComponent<FileIO>().GetPlayerSPostion();
+					PhotonNetwork.Instantiate (this.playerObject.name, playerPosition, Quaternion.identity, 0);
+                    Pcount++;
 				} 
 				else 
 				{
@@ -80,7 +84,7 @@ namespace NRN.Tales
 
 		public virtual void OnLeftRoom()
 		{
-			SceneManager.LoadScene ("TEST SCENE");
+			SceneManager.LoadScene ("MapScene");
 		}
 
 		public void LeaveRoom()
@@ -101,7 +105,7 @@ namespace NRN.Tales
 
 			Debug.Log ("PhotonNetwork: Loading Da Level");
 
-			PhotonNetwork.LoadLevel("TEST SCENE");
+			PhotonNetwork.LoadLevel("MapScene");
 		}
 	}
 }

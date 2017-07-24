@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement : Photon.PunBehaviour//, IPunObservable
+{
 
 	// Reference to the FileIO script
 	FileIO fileIOObj;
@@ -22,13 +23,24 @@ public class PlayerMovement : MonoBehaviour {
 	int diceRolledA;
 	int diceRolledB;
 	public int diceTotal;
+    public static GameObject LocalPlayerInstance;
 
-	// bool to check for player movement
-	public bool canMove;
+    // bool to check for player movement
+    public bool canMove;
 	// bool to rotate the player left/right/up/down
 	bool canRoll, leftMove, rightMove, upMove, downMove;
 
-	void Start(){
+    public void Awake()
+    {
+        if (photonView.isMine)
+        {
+            LocalPlayerInstance = gameObject;
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void Start(){
 		canRoll = true;
 
 		// Finding the map generator in the game scene
@@ -48,55 +60,56 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void Update(){
+        if (photonView.isMine)
+        {
+            // Rolling the dice and getting the value.
+            if (canRoll && Input.GetKeyDown(KeyCode.Space))
+            {
+                canRoll = false;
+                diceRolledA = Random.Range(1, 6);
+                diceRolledB = Random.Range(1, 6);
+                diceTotal = diceRolledA + diceRolledB;
+                Debug.Log("Dice A: " + diceRolledA + " + Dice B: " + diceRolledB + " = Dice Total: " + diceTotal);
+            }
 
-		// Rolling the dice and getting the value.
-		if (canRoll && Input.GetKeyDown (KeyCode.Space)) 
-		{
-			canRoll = false;
-			diceRolledA = Random.Range (1,6);
-			diceRolledB = Random.Range (1, 6);
-			diceTotal = diceRolledA + diceRolledB;
-			Debug.Log ("Dice A: "+diceRolledA+" + Dice B: "+diceRolledB+" = Dice Total: "+diceTotal);
-		}
-
-		// If the player has selected the Up Arrow key. The total of the tile is not 0. Making sure player does not move backwards.
-		if (Input.GetKeyDown (KeyCode.UpArrow) && diceTotal!=0 && !downMove)
-		{
-			Debug.Log ("Up pressed.");
-			// Getting the position of the player  
-			playerPos = this.transform.position;
-			// Setting and moving the player position
-			playerDest = new Vector3 (playerPos.x, playerPos.y, playerPos.z+2f);
-			// The tile the player has to move towards
-			tileDestination = new Vector3 (playerPos.x, playerPos.y-1.75f, playerPos.z+2f);
-			// Passing value to the PlayerMove function.
-			PlayerMove (tileDestination, upRot,'u');
-		}
-		else if (Input.GetKeyDown (KeyCode.DownArrow) && diceTotal!=0 && !upMove) 
-		{
-			Debug.Log ("Down pressed.");
-			playerPos = this.transform.position;
-			playerDest = new Vector3 (playerPos.x, playerPos.y, playerPos.z-2f);
-			tileDestination = new Vector3 (playerPos.x, playerPos.y-1.75f, playerPos.z-2f);
-			PlayerMove (tileDestination, downRot,'d');
-		}
-		else if (Input.GetKeyDown (KeyCode.RightArrow) && diceTotal!=0 && !leftMove) 
-		{
-			Debug.Log ("Right pressed.");
-			playerPos = this.transform.position;
-			playerDest = new Vector3 (playerPos.x+2f, playerPos.y, playerPos.z);
-			tileDestination = new Vector3 (playerPos.x+2f, playerPos.y-1.75f, playerPos.z);
-			PlayerMove (tileDestination, rightRot,'r');
-		}
-		else if (Input.GetKeyDown (KeyCode.LeftArrow) && diceTotal!=0 && !rightMove) 
-		{
-			Debug.Log ("Left pressed.");
-			playerPos = this.transform.position;
-			playerDest = new Vector3 (playerPos.x-2f, playerPos.y, playerPos.z);
-			tileDestination = new Vector3 (playerPos.x-2f, playerPos.y-1.75f, playerPos.z);
-			PlayerMove (tileDestination, leftRot,'l');
-		}
-
+            // If the player has selected the Up Arrow key. The total of the tile is not 0. Making sure player does not move backwards.
+            if (Input.GetKeyDown(KeyCode.UpArrow) && diceTotal != 0 && !downMove)
+            {
+                Debug.Log("Up pressed.");
+                // Getting the position of the player  
+                playerPos = this.transform.position;
+                // Setting and moving the player position
+                playerDest = new Vector3(playerPos.x, playerPos.y, playerPos.z + 2f);
+                // The tile the player has to move towards
+                tileDestination = new Vector3(playerPos.x, playerPos.y - 1.75f, playerPos.z + 2f);
+                // Passing value to the PlayerMove function.
+                PlayerMove(tileDestination, upRot, 'u');
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) && diceTotal != 0 && !upMove)
+            {
+                Debug.Log("Down pressed.");
+                playerPos = this.transform.position;
+                playerDest = new Vector3(playerPos.x, playerPos.y, playerPos.z - 2f);
+                tileDestination = new Vector3(playerPos.x, playerPos.y - 1.75f, playerPos.z - 2f);
+                PlayerMove(tileDestination, downRot, 'd');
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow) && diceTotal != 0 && !leftMove)
+            {
+                Debug.Log("Right pressed.");
+                playerPos = this.transform.position;
+                playerDest = new Vector3(playerPos.x + 2f, playerPos.y, playerPos.z);
+                tileDestination = new Vector3(playerPos.x + 2f, playerPos.y - 1.75f, playerPos.z);
+                PlayerMove(tileDestination, rightRot, 'r');
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && diceTotal != 0 && !rightMove)
+            {
+                Debug.Log("Left pressed.");
+                playerPos = this.transform.position;
+                playerDest = new Vector3(playerPos.x - 2f, playerPos.y, playerPos.z);
+                tileDestination = new Vector3(playerPos.x - 2f, playerPos.y - 1.75f, playerPos.z);
+                PlayerMove(tileDestination, leftRot, 'l');
+            }
+        }
 	}
 
 	void PlayerMove (Vector3 playerDestination, Vector3 playerRot,char moveDir)
@@ -177,6 +190,24 @@ public class PlayerMovement : MonoBehaviour {
 
 		Debug.Log (diceTotal);
 	}
+
+    void CalledOnLevelLoaded(int level)
+    {
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            Vector3 pos = transform.position;
+            stream.Serialize(ref pos);
+        }
+        else
+        {
+            Vector3 pos = Vector3.zero;
+            stream.Serialize(ref pos);
+        }
+    }
 }
 
 /* TO DO:
