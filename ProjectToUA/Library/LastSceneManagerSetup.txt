@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Nabeeha's Project Files/newwwwwwwwwwwwScne.unity
+- path: Assets/Nabeeha's Project Files/Scenes/playerStats.unity
   isLoaded: 1
   isActive: 1
