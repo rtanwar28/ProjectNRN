@@ -11,22 +11,6 @@ public class PHPServerRequests : MonoBehaviour {
 
     private string username, password, regName, regUsername, regPass, regConfPass, regEmail, regDOB, regSA;
 
-    public void Awake()
-    {
-        usernameText = GameObject.Find("LUNText").GetComponent<Text>();
-        passwordText = GameObject.Find("LPText").GetComponent<Text>();
-        regNameText = GameObject.Find("NText").GetComponent<Text>();
-        regUsernameText = GameObject.Find("UNText").GetComponent<Text>();
-        regPassText = GameObject.Find("PText").GetComponent<Text>();
-        regConfPassText = GameObject.Find("CPText").GetComponent<Text>();
-        regEmailText = GameObject.Find("EText").GetComponent<Text>();
-        regDOBText = GameObject.Find("DOBText").GetComponent<Text>();
-        regSAText = GameObject.Find("SAText").GetComponent<Text>();
-        feedbackMessage = GameObject.Find("FbText").GetComponent<Text>();
-        ServerLauncher = GameObject.Find("Launcher");
-
-    }
-
     //FUNCTION TO BE CALLED VIA THE UI BUTTON
     public void LogIn()
     {

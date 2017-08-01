@@ -6,6 +6,11 @@ using System.IO;
 public class FileIO : MonoBehaviour
 {
 	public GameObject greenGrass, darkGrass, blueWater, darkWater, yellowSand, brownMud, chanceTile, storeTile, enemyTile, treePrefab, playerPrefab;
+	// for the event tiles
+	public GameObject chanceBlock, storeBlock;
+
+	public Transform[] instantiatePos = new Transform[2];
+
     public Vector3 playerStartPos;
 
 
@@ -104,13 +109,13 @@ public class FileIO : MonoBehaviour
 
 				else if (test [i] == 'c')
 				{
-					prefabTransforms.Add(Instantiate (yellowSand, new Vector3 (k * 2, 0, j * 2), Quaternion.Euler (0f, 90f, 0f)).transform);
+					prefabTransforms.Add(Instantiate (chanceBlock, new Vector3 (k * 2, 0, j * 2), Quaternion.Euler (0f, 90f, 0f)).transform);
 					Instantiate (chanceTile, new Vector3 (k * 2, 1.26f, j * 2), Quaternion.Euler (0f, 90f*tileRot, 0f));
 				} 
 
 				else if (test [i] == 's')
 				{
-					prefabTransforms.Add(Instantiate (yellowSand, new Vector3 (k * 2, 0, j * 2), Quaternion.Euler (0f, 90f, 0f)).transform);
+					prefabTransforms.Add(Instantiate (storeBlock, new Vector3 (k * 2, 0, j * 2), Quaternion.Euler (0f, 90f, 0f)).transform);
 					Instantiate (storeTile, new Vector3 (k * 2, 1.26f, j * 2), Quaternion.Euler (0f, 90f, 0f));
 				} 
 
@@ -139,7 +144,11 @@ public class FileIO : MonoBehaviour
 			minimapCamera.orthographicSize = k + 1;
 
 		Transform startTileTransform = prefabTransforms[94]; //Select the tile to instantiate player on from 'prefabTransform' list.
-		playerStartPos = startTileTransform.position + new Vector3(0f,1.25f,0f); //To figure out later
+		//playerStartPos = startTileTransform.position + new Vector3(0f,1.25f,0f); //To figure out later
+
+		Transform newPos = instantiatePos [(Random.Range (0, 1))];
+
+		playerStartPos = startTileTransform.position + newPos.position;
 		//Instantiate (playerPrefab, playerStartPos, Quaternion.identity);
 
 
