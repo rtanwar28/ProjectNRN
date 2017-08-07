@@ -13,20 +13,21 @@ namespace NRN.Tales
 	public class Launcher : Photon.PunBehaviour 
 	{
 
-		public GameObject namePanel;
+        public GameObject namePanel;    
 
-		public Text feedbackText;
-        public Text serverText;
-        public Text roomText;
-        public Text user;
-        public Text roomHeading;
+        public Text feedbackText;       
+        public Text serverText;         
+        public Text roomText;           
+        public Text user;               
+        public Text roomHeading;        
         public InputField cServerName;
         public InputField jServerName;
-        public GameObject LogInPanels;
+        public GameObject LogInPanels;  
         public GameObject FBTexts;
-        public GameObject MainMenu;
-        public GameObject Lobby;
-        public GameObject Room;
+        public GameObject MainMenu;     
+        public GameObject Lobby;        
+        public GameObject Room;         
+        public GameObject loginMenu, registerMenu;
 
         public RoomInfo [] lobbyRooms;
         //public String[][] playersInfo;
@@ -48,7 +49,34 @@ namespace NRN.Tales
 			PhotonNetwork.autoJoinLobby = false;
 
             PhotonNetwork.automaticallySyncScene = true;
-		}
+
+            namePanel = GameObject.Find("LUNText");
+
+            feedbackText = GameObject.Find("ConnectionText").GetComponent<Text>();
+            serverText = GameObject.Find("ServerText").GetComponent<Text>();
+            roomText = GameObject.Find("RoomInfoText").GetComponent<Text>();
+            user = GameObject.Find("UserHeadText").GetComponent<Text>();
+            roomHeading = GameObject.Find("RHeadingText").GetComponent<Text>();
+            cServerName = GameObject.Find("CreateServer").GetComponent<InputField>();
+            jServerName = GameObject.Find("JoinServer").GetComponent<InputField>();
+
+            LogInPanels = GameObject.Find("LogInAndRegisterPanels");
+            FBTexts = GameObject.Find("FBTexts");
+            MainMenu = GameObject.Find("MainMenu");
+            Lobby = GameObject.Find("Lobby");
+            Room = GameObject.Find("Room");
+            loginMenu = GameObject.Find("LoginMenu");
+            registerMenu = GameObject.Find("RegisterMenu");
+
+            
+            MainMenu.gameObject.SetActive(false);
+            Lobby.gameObject.SetActive(false);
+            Room.gameObject.SetActive(false);
+            loginMenu.SetActive(true);
+            FBTexts.gameObject.SetActive(true);
+            registerMenu.SetActive(false);
+
+        }
 
         void Start()
         {
@@ -286,6 +314,19 @@ namespace NRN.Tales
         //    PhotonNetwork.LoadLevel("Level1");
         //    //}
         //}
+
+
+        public void SignUpButton()
+        {
+            loginMenu.SetActive(false);
+            registerMenu.SetActive(true);
+        }
+
+        public void ProceedToLogin()
+        {
+            registerMenu.SetActive(false);
+            loginMenu.SetActive(true);
+        }
 
         void Update()
         {

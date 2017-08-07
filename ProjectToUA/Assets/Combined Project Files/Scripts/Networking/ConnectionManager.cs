@@ -19,7 +19,12 @@ namespace NRN.Tales
 		//Sets up an static instance of ConnectionManager
 		static public ConnectionManager Instance;
 
-		public GameObject playerObject;
+        public int numOfPlayers;
+        public int[] initialRoll;
+        public GameObject TurnManager;
+        public GameObject playerObject;
+        public GameObject[] players;
+        public GameObject[] playerOrder;
         public Vector3 playerPosition;
 
 		#endregion
@@ -28,6 +33,8 @@ namespace NRN.Tales
 
 		private GameObject instance;
         int Pcount = 0;
+        int temp;
+        bool orderDecided;
 
 		#endregion
 
@@ -44,7 +51,7 @@ namespace NRN.Tales
 
 			if (playerObject == null) 
 			{
-				Debug.LogError ("<Color=Red><b>Missing</b></Color> playerObject is Missing. Please assign it in 'ConnectionManager' GameObject.", this);
+				Debug.LogError ("<Color=Red><b>Missing</b></Color> playerObject is Missing. Please assign it in 'ConnectionManager' player object.", this);
 			} 
 			else 
 			{
@@ -72,19 +79,20 @@ namespace NRN.Tales
 			}
 		}
 
-		//public void OnPhotonPlayerConnected( PhotonPlayer other )
-		//{
-		//	Debug.Log ("OnPhotonPlayerConnected() " + other.NickName);
+        public void OnPhotonPlayerConnected(PhotonPlayer other)
+        {
 
-  //          //&& PhotonNetwork.playerList.Length == 4
-  //          if (PhotonNetwork.isMasterClient) 
-		//	{
-		//		Debug.Log ("OnPhotonPlayerConnected isMasterClient" + PhotonNetwork.isMasterClient);
-		//		LoadArena ();
-		//	}
-		//}
+            //	Debug.Log ("OnPhotonPlayerConnected() " + other.NickName);
 
-		public virtual void OnLeftRoom()
+            //          //&& PhotonNetwork.playerList.Length == 4
+            //          if (PhotonNetwork.isMasterClient) 
+            //	{
+            //		Debug.Log ("OnPhotonPlayerConnected isMasterClient" + PhotonNetwork.isMasterClient);
+            //		LoadArena ();
+            //	}
+        }
+
+    public virtual void OnLeftRoom()
 		{
 			SceneManager.LoadScene ("LogInRegister_UI");
 		}

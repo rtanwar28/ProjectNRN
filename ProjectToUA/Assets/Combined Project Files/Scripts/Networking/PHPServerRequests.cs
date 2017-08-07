@@ -5,11 +5,25 @@ using UnityEngine.UI;
 
 public class PHPServerRequests : MonoBehaviour {
 
-    public Text usernameText, passwordText, regNameText, regUsernameText, regPassText, regConfPassText, regEmailText, regDOBText, regSAText;
+    public Text usernameText, passwordText, regNameText, regUsernameText, regPassText, regConfPassText, regEmailText;
     public Text feedbackMessage;
     public GameObject ServerLauncher;
 
-    private string username, password, regName, regUsername, regPass, regConfPass, regEmail, regDOB, regSA;
+    private string username, password, regName, regUsername, regPass, regConfPass, regEmail;
+
+    public void Awake()
+    {
+        usernameText = GameObject.Find("LUNText").GetComponent<Text>();
+        passwordText = GameObject.Find("LPText").GetComponent<Text>();
+        regNameText = GameObject.Find("NText").GetComponent<Text>();
+        regUsernameText = GameObject.Find("UNText").GetComponent<Text>();
+        regPassText = GameObject.Find("PText").GetComponent<Text>();
+        regConfPassText = GameObject.Find("CPText").GetComponent<Text>();
+        regEmailText = GameObject.Find("EText").GetComponent<Text>();
+        feedbackMessage = GameObject.Find("FbText").GetComponent<Text>();
+        ServerLauncher = GameObject.Find("Launcher");
+
+    }
 
     //FUNCTION TO BE CALLED VIA THE UI BUTTON
     public void LogIn()
@@ -40,10 +54,8 @@ public class PHPServerRequests : MonoBehaviour {
         regConfPass = regConfPassText.text;    //POPULATE THE PRIVATE regConfPass VARIABLE WITH THE TEXT THE PLAYER ENTERED INTO THE regConfPassText INPUT FIELD
         regEmail = regEmailText.text;    //POPULATE THE PRIVATE regEmail VARIABLE WITH THE TEXT THE PLAYER ENTERED INTO THE regEmailText INPUT FIELD
         regName = regNameText.text;    //POPULATE THE PRIVATE regName VARIABLE WITH THE TEXT THE PLAYER ENTERED INTO THE regNameText INPUT FIELD
-        regDOB = regDOBText.text;
-        regSA = regSAText.text;
 
-        if (regName == "" || regUsername == "" || regPass == "" || regConfPass == "" || regEmail == "" || regDOB == "" || regSA == "") //IF THE PLAYER HASN'T ENTERED THE REQUIRED INFORMATION...TELL THEM TO
+        if (regName == "" || regUsername == "" || regPass == "" || regConfPass == "" || regEmail == "") //IF THE PLAYER HASN'T ENTERED THE REQUIRED INFORMATION...TELL THEM TO
             feedbackMessage.text = "Please complete all fields.";
         else    //IF ALL INFORMATION IS ENTERED......
         {
@@ -54,8 +66,6 @@ public class PHPServerRequests : MonoBehaviour {
                 form.AddField("password", regPass);
                 form.AddField("email", regEmail);
                 form.AddField("name", regName);
-                form.AddField("date_of_birth", regDOB);
-                form.AddField("secret_answer", regSA);
 
                 WWW w = new WWW("http://tales-of-untrustworthy-adventurers.000webhostapp.com/Register.php", form);    //REPLACE ?????????? WITH YOUR AWARD SPACE DOMAIN
                 StartCoroutine(Register(w));
@@ -91,7 +101,10 @@ public class PHPServerRequests : MonoBehaviour {
         yield return _w;    //WAIT FOR A RESPONSE FROM THE SERVER
 
         if (_w.error == null)    //IF THE SERVER DOESN"T SEND BACK AN ERROR
+        {
             feedbackMessage.text = _w.text;        //THE PHP SCRIPT SUPPLIED WILL SEND A MESSAGE BACK TO THE PLAYER SAYING REGISTRATION WAS COMPLETED
+            ServerLauncher.GetComponent<NRN.Tales.Launcher>().ProceedToLogin();
+        }
         else
             feedbackMessage.text = "ERROR: " + _w.error;    //IF THERE IS AN ERROR (SUCH AS THE SERVER BEING DOWN) THE PHP SCRIPT SUPPLIED WILL TELL THE PLAYER
     }
