@@ -12,7 +12,7 @@ public class PlayerMovement : Photon.PunBehaviour
 	//public GameObject playerPrefab;
 	Vector3 playerPos, playerDest, tileDestination;
 
-	bool canMove, leftRot, rightRot;
+	bool canMove, leftRot, rightRot, isTimerActive;
 	public bool canRoll;
 
 	public int extraMoveCount;
@@ -25,6 +25,8 @@ public class PlayerMovement : Photon.PunBehaviour
     public static GameObject LocalPlayerInstance;
     public GameObject mainCamera;
 
+    Text timerTxt;
+
     public void Awake()
     {
         if (photonView.isMine)
@@ -35,8 +37,13 @@ public class PlayerMovement : Photon.PunBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-    }
 
+        timerTxt = GameObject.Find("Timer").GetComponent<Text>();
+
+        timerTxt.gameObject.SetActive((false));
+
+        isTimerActive = false;
+    }
 
     void Start()
     {
@@ -216,6 +223,16 @@ public class PlayerMovement : Photon.PunBehaviour
         {
             Vector3 pos = Vector3.zero;
             stream.Serialize(ref pos);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "FinishPoint" && !isTimerActive)
+        {
+			timerTxt.gameObject.SetActive((true));
+
+			isTimerActive = true;
         }
     }
 

@@ -144,12 +144,12 @@ public class FileIO : MonoBehaviour
 			minimapCamera.orthographicSize = k + 1;
 
 		Transform startTileTransform = prefabTransforms[94]; //Select the tile to instantiate player on from 'prefabTransform' list.
-		//playerStartPos = startTileTransform.position + new Vector3(0f,1.25f,0f); //To figure out later
+		playerStartPos = startTileTransform.position + new Vector3(0f,1.25f,0f); //To figure out later
 
-		Transform newPos = instantiatePos [(Random.Range (0, 1))];
+	//	Transform newPos = instantiatePos [(Random.Range (0, 1))];
 
-		playerStartPos = startTileTransform.position + newPos.position;
-		//Instantiate (playerPrefab, playerStartPos, Quaternion.identity);
+	//	playerStartPos = startTileTransform.position + newPos.position;
+		Instantiate (playerPrefab, playerStartPos, Quaternion.identity);
 
 
     }
