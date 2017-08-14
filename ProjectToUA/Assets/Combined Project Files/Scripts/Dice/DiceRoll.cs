@@ -29,10 +29,10 @@ public class DiceRoll : MonoBehaviour
 
 	public void RollDice ()
 	{
-		diceRolledA = Random.Range (1, 7);
-		diceRolledB = Random.Range (1, 7);
-		//diceRolledA = 2;
-		//diceRolledB = 2;
+		//diceRolledA = Random.Range (1, 7);
+		//diceRolledB = Random.Range (1, 7);
+		diceRolledA = 1;
+		diceRolledB = 1;
 		diceTotal = diceRolledA + diceRolledB;
 		DisplayDice (diceRolledA, diceRolledB);
 

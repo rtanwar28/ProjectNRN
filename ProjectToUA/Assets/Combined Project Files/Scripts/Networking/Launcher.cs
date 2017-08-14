@@ -228,7 +228,10 @@ namespace NRN.Tales
                 {
                     Debug.Log("Loading the Map for the Game");
                     //ToDo: Change to actual map scene
-                    PhotonNetwork.LoadLevel("Level1");
+
+                    //PhotonNetwork.LoadLevel("Level1");
+                    PhotonNetwork.LoadLevel(1);
+
                 }
             }
             else
@@ -335,7 +338,7 @@ namespace NRN.Tales
                 roomText.text = "";
                 for (int i = 0; i <  PhotonNetwork.playerList.Length; i++)
                 {
-                    roomText.text += " " + PhotonNetwork.playerList[i].ID + " " + PhotonNetwork.playerList[i].NickName + System.Environment.NewLine;
+                    roomText.text += "    " + PhotonNetwork.playerList[i].ID + "         " + PhotonNetwork.playerList[i].NickName + System.Environment.NewLine;
                 }
             //    for(int x = 0; x < playersInfo.Length; x++)
             //    {
