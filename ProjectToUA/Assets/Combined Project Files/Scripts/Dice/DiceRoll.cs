@@ -8,19 +8,22 @@ public class DiceRoll : MonoBehaviour
 {
 
 	public int diceRolledA, diceRolledB, diceTotal;
-	public Image diceA, diceB;
+    public Image diceA, diceB;
 	public Sprite zero, one, two, three, four, five, six;
 	public Text diceText;
+
+    public int fightDiceRollA, fightDiceRollB, fightDiceTotal;
+    public Image fightDiceA, fightDiceB;
 
 	// Use this for initialization
 	void Start ()
 	{
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update ()
 	{
-
 		if (diceTotal != 0)
 			diceText.enabled = false;
 		else
@@ -35,7 +38,6 @@ public class DiceRoll : MonoBehaviour
 		diceRolledB = 1;
 		diceTotal = diceRolledA + diceRolledB;
 		DisplayDice (diceRolledA, diceRolledB);
-
 	}
 
 	public void DisplayDice (int a, int b)
@@ -44,7 +46,23 @@ public class DiceRoll : MonoBehaviour
 		showDice (diceB, b);
 	}
 
-	void  showDice (Image img, int x)
+    public void FightRollDice()
+    {
+        fightDiceRollA = Random.Range(1, 7);
+        fightDiceRollB = Random.Range(1, 7);
+
+        fightDiceTotal = fightDiceRollA + fightDiceRollB;
+        FightDisplayDice(fightDiceRollA, fightDiceRollB);
+    }
+
+    public void FightDisplayDice(int a, int b)
+    {
+        showDice(fightDiceA, a);
+        showDice(fightDiceB, b);
+    }
+
+
+    void showDice (Image img, int x)
 	{
 		switch (x) {
 		case 0:

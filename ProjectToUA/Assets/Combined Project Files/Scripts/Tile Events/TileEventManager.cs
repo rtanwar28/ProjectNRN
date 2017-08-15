@@ -28,7 +28,7 @@ public class TileEventManager : Photon.PunBehaviour
     // Use this for initialization
     void Start () 
 	{
-        enemyTileManager = GetComponent<EnemyTileManager>();
+        enemyTileManager = GameObject.FindWithTag("enemy").GetComponent<EnemyTileManager>();
 
         // Getting the Player Gameobject, player position and player rotation
         playerGO = GameObject.FindWithTag("Player");
@@ -119,33 +119,47 @@ public class TileEventManager : Photon.PunBehaviour
     public void GetTileInfront(GameObject newCard)
     {
         // Setting the destination by further 2 units of the player
-        Vector3 playerDest = playerPos + playerGO.transform.forward * 2f;
+        Vector3 playerDest = playerPos + (playerGO.transform.forward * 2f);
 
         // Setting the card destination value
-        Vector3 cardDestination = new Vector3(playerDest.x, playerDest.y + 0.6f, playerDest.z);
+        Vector3 cardDestination = new Vector3(playerDest.x,0.85f, playerDest.z);
 
         // Instantiating the card game object.
         GameObject go = (GameObject)Instantiate(newCard, cardDestination, Quaternion.identity);
+        
+
+        if(playerRot.x == 90f)
+        {
+            go.transform.eulerAngles = new Vector3(0f, playerRot.y, playerRot.z);
+        }
+        else if(playerRot.y == 90f)
+        {
+            go.transform.eulerAngles = new Vector3(playerRot.x, 0f, playerRot.z);
+        }
+        else if (playerRot.z == 90f)
+        {
+            go.transform.eulerAngles = new Vector3(playerRot.x, playerRot.y, 0f);
+        }
+        else
+        {
+            go.transform.eulerAngles = new Vector3(90f, playerRot.y, playerRot.z);
+        }
 
         // Setting the rotation of the card as per the rotation of the player.
-        go.transform.eulerAngles = playerRot;
 
-        //StartCoroutine(rotatePlayer(go));
+        // Debug.Log("newcard rot part 2: " + go.transform.eulerAngles);
 
-        StartCoroutine(CardPanel());
+         StartCoroutine(RotateCard(go));
 
-    }
-
-    IEnumerator CardPanel()
-    {
-        tempPanel.SetActive(true);
-
-        yield return new WaitForSeconds(3);
+        // StartCoroutine(CardPanel());
 
     }
 
-   /* IEnumerator rotatePlayer(GameObject cardGO)
+    
+
+    IEnumerator RotateCard(GameObject cardGO)
     {
+        Debug.Log("x Rotate: " + cardGO.transform.eulerAngles.x);
         if (photonView.isMine)
         {
         float time = 0.7f;
@@ -153,12 +167,16 @@ public class TileEventManager : Photon.PunBehaviour
         float rate = 1f / time;
         while (i < 1)
         {
-            i += Time.deltaTime * rate;
-            cardGO.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(this.transform.eulerAngles.x + 90f, 0f, 0f), i);
-            yield return null;
+            i = Time.deltaTime * rate;
+            cardGO.transform.rotation = Quaternion.Lerp(Quaternion.Euler(cardGO.transform.eulerAngles), Quaternion.Euler(0f, cardGO.transform.eulerAngles.y, cardGO.transform.eulerAngles.z), i);
+
+                yield return null;
+                StartCoroutine(enemyTileManager.CardPanel(tempPanel));
+            }
         }
-        }
-    }*/
+
+        this.gameObject.GetComponent<PlayerMovement>().canRoll = true;
+    }
 
     void OnTriggerExit(Collider other)
 	{

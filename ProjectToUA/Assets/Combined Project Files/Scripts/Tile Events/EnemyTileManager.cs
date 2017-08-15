@@ -3,59 +3,133 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyTileManager : MonoBehaviour
+public class EnemyTileManager : Photon.MonoBehaviour
 {
-    // Variables for player position and rotation
-    Vector3 playerPos, playerRot;
+    public GameObject ePanel;
+    public GameObject fPanel;
+    public GameObject rPanel;
+    GameObject enPanel;
 
-    GameObject playerGO;
+    DiceRoll diceRollObj;
+    CoinManager coinObj;
+    //PlayerMovement moveObj;
+
+    public bool choiceSelected, isFightRoll, enemyRolling, closePanel;
+
+    public int playerAVal, enemyAVal, fDiceTotal;
+
+    public Text playerATxt,enemyATxt,winLoseTxt, enemyRollText;
 
     void Start()
     {
-        //// Getting the Player Gameobject, player position and player rotation
-        //playerGO = GameObject.FindWithTag("Player");
-        //playerPos = GameObject.FindWithTag("Player").transform.position;
-        //playerRot = GameObject.FindWithTag("Player").transform.eulerAngles;
+        diceRollObj = GameObject.Find("Dice").GetComponent<DiceRoll>();
+        coinObj = GameObject.Find("Coins").GetComponent<CoinManager>();
+       // moveObj = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
+
+        choiceSelected = false;
+        isFightRoll = false;
+
+        fPanel.SetActive(false);
+        rPanel.SetActive(false);
+
+        playerAVal = 36;
+        enemyAVal = 50;
+
+        playerATxt.text = playerAVal.ToString();
+        enemyATxt.text = enemyAVal.ToString();
+
+        enemyRollText.enabled = false;
+        enemyRolling = false;
+        winLoseTxt.text = "";
+
+        closePanel = false;
     }
 
     void Update()
     {
-        //// Updating the values every frame
-        //playerPos = playerGO.transform.position;
-        //playerRot = playerGO.transform.eulerAngles;
+        if (choiceSelected)
+        {
+            ePanel.SetActive(false);
+            fPanel.SetActive(true);
+            rPanel.SetActive(true);
+            choiceSelected = false;
+        }
     }
 
-    public void GetTileInfront(GameObject newCard)
+    public IEnumerator CardPanel(GameObject enemyPanel)
     {
-       // // Setting the destination by further 2 units of the player
-       // Vector3 playerDest = playerPos + playerGO.transform.forward * 2f;
+        yield return new WaitForSeconds(3);
+        enPanel = enemyPanel;
+        enemyPanel.SetActive(true);
+    }
 
-       // // Setting the card destination value
-       // Vector3 cardDestination = new Vector3(playerDest.x, playerDest.y + 0.6f, playerDest.z);
+    public void ChooseButton()
+    {
+        choiceSelected = true;
+        Debug.Log("The player has chosen a button");
+    }
+
+    public void FightRollButton()
+    {
+        isFightRoll = true;
+        diceRollObj.FightRollDice();
+        fDiceTotal = diceRollObj.fightDiceTotal;
         
-       // // Instantiating the card game object.
-       // GameObject go= (GameObject) Instantiate(newCard, cardDestination, Quaternion.identity);
-
-       // // Setting the rotation of the card as per the rotation of the player.
-       //go.transform.eulerAngles = playerRot;
-
-       // //StartCoroutine(rotatePlayer());
-   
+        StartCoroutine(CloseRollButton());
     }
 
-   /* IEnumerator rotatePlayer()
+    IEnumerator CloseRollButton()
     {
-        //if (photonView.isMine)
-       // {
-            float time = 0.7f;
-            float i = 0f;
-            float rate = 1f / time;
-            while (i < 1)
-            {
-                i += Time.deltaTime * rate;
-                this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(0f, 0f, this.transform.eulerAngles.z + 90f), i);
-                yield return null;
-            }
-       // }
-    }*/
+        while(isFightRoll)
+        {
+            playerAVal = playerAVal + fDiceTotal;
+            playerATxt.text = playerAVal.ToString();
+            yield return new WaitForSeconds(1);
+            rPanel.SetActive(false);
+            isFightRoll = false;
+            enemyRolling = true;
+            StartCoroutine(EnemyRoll());
+        }   
+    }
+
+    IEnumerator EnemyRoll()
+    {
+        while(enemyRolling)
+        {
+            enemyRollText.enabled = true;
+            int first = Random.Range(1, 7);
+            int second = Random.Range(1, 7);
+            yield return new WaitForSeconds(2);
+            enemyRollText.text = "Enemy has rolled";
+            enemyRolling = false;
+            enemyAVal = enemyAVal + first + second;
+            enemyATxt.text = enemyAVal.ToString();
+            enemyRollText.enabled = false;
+            FinalDecide();
+        }
+    }
+
+    void FinalDecide()
+    {
+        if(playerAVal > enemyAVal)
+        {
+            winLoseTxt.color = Color.yellow;
+            winLoseTxt.fontSize = 25;
+            winLoseTxt.text = "Enemy defeated. You got coins.";
+
+            coinObj.coinValue += 25;
+           // enemyPanel.SetActive(false);
+            //this.gameObject.SetActive(false);
+           // moveObj.canRoll = true;
+        }
+        else
+        {
+            winLoseTxt.color = Color.red;
+            winLoseTxt.text = "You got defeated.The enemy took your gold.";
+
+            coinObj.coinValue -= 35;
+            enPanel.SetActive(false);
+            //moveObj.canRoll = true;
+        }
+    }
 }

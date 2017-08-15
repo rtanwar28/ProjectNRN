@@ -14,13 +14,15 @@ public class PlayerStuff : MonoBehaviour {
 
     int index;
 
-    float healthFloat, dexFloat, magFloat, atkFloat;
+    public  float healthFloat, dexFloat, magFloat, atkFloat;
+
     float oldValue, newValue;
 
     public Slider hltSlider, dexSlider, magSlider, atkSlider;
 
-    bool isBtnClicked;
-    int valH, valD, valM, valA;
+    bool isBtnClicked; //to check if player retrieves stats
+
+    int valH, valD, valM, valA; //whole number values of the sliders 
 
     string[] stats = new string[4];
 
@@ -34,6 +36,7 @@ public class PlayerStuff : MonoBehaviour {
         magSlider.value = oldValue;
         atkSlider.value = oldValue;
 
+        //checking if player is trying to retrieve stats
         isBtnClicked = false;
 
         index = 0;
@@ -47,9 +50,9 @@ public class PlayerStuff : MonoBehaviour {
     public void Update()
     {
         if (isBtnClicked)
-        {
-            hltSlider.value = Mathf.Lerp(hltSlider.value, healthFloat, 0.05f);
-            valH = Mathf.CeilToInt(hltSlider.value);
+        {            
+            hltSlider.value = Mathf.Lerp(hltSlider.value, healthFloat, 0.05f); //lerping the float value of the sliders by 0.05f
+            valH = Mathf.CeilToInt(hltSlider.value); //saving the float value to the closest integer
 
             dexSlider.value = Mathf.Lerp(dexSlider.value, dexFloat, 0.05f);
             valD = Mathf.CeilToInt(dexSlider.value);
@@ -61,8 +64,10 @@ public class PlayerStuff : MonoBehaviour {
             valA = Mathf.CeilToInt(atkSlider.value);
         }
 
+        //if player has retrieved stats using whole numbers
         if (valH == healthFloat && valD == dexFloat && valM == magFloat && valA == atkFloat)
         {
+            //reset the GetStats button check
             isBtnClicked = false;
         }
     }
