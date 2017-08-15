@@ -11,7 +11,7 @@ public class TileEventManager : Photon.PunBehaviour
 	GameObject storePanel, chancePanel, enemyPanel;
 	public GameObject tempPanel;
 
-    // public GameObject[] enemyCardPrefabs = new GameObject[4];
+    public GameObject[] enemyCardPrefabs = new GameObject[4];
     EnemyTileManager enemyTileManager;
 
     public GameObject card;
@@ -104,7 +104,7 @@ public class TileEventManager : Photon.PunBehaviour
                 Debug.Log("enemy called");
 
                 this.GetComponent<PlayerMovement>().canRoll = false;
-    
+                card = enemyCardPrefabs[Random.Range(0, 4)];
                 GetTileInfront(card);
 
                 tempPanel = enemyPanel;
@@ -177,18 +177,5 @@ public class TileEventManager : Photon.PunBehaviour
 
         this.gameObject.GetComponent<PlayerMovement>().canRoll = true;
     }
-
-    void OnTriggerExit(Collider other)
-	{
-        if (photonView.isMine)
-        {
-            if (other.tag == "enemy")
-            {
-                tempPanel = enemyPanel;
-                tempPanel.SetActive(false);
-            }
-        }
-	}
-
 
 }

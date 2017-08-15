@@ -20,6 +20,7 @@ public class PlayerMovement : Photon.PunBehaviour
 	//public Stack<Transform> playerMoveHistory;
 
 	ChanceTileManager ctmObj;
+    EnemyTileManager etmObj;
 
 	public bool extraM;
     public static GameObject LocalPlayerInstance;
@@ -56,6 +57,7 @@ public class PlayerMovement : Photon.PunBehaviour
 
             fileIOObj = GameObject.Find("Map Generator").GetComponent<FileIO>();
             diceObj = GameObject.Find("Dice").GetComponent<DiceRoll>();
+            etmObj = GameObject.FindWithTag("enemy").GetComponent<EnemyTileManager>();
 
             extraMoveCount = 0;
 
@@ -132,6 +134,12 @@ public class PlayerMovement : Photon.PunBehaviour
                     leftRot = true;
                 rightRot = false;
             }
+        }
+
+        if(etmObj.closePanel)
+        {
+            //etmObj.canvasGO.gameObject
+            canRoll = true;
         }
 
 	}

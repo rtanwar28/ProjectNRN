@@ -8,6 +8,7 @@ public class EnemyTileManager : Photon.MonoBehaviour
     public GameObject ePanel;
     public GameObject fPanel;
     public GameObject rPanel;
+    public Canvas canvasGO;
     GameObject enPanel;
 
     DiceRoll diceRollObj;
@@ -16,7 +17,9 @@ public class EnemyTileManager : Photon.MonoBehaviour
 
     public bool choiceSelected, isFightRoll, enemyRolling, closePanel;
 
-    public int playerAVal, enemyAVal, fDiceTotal;
+
+
+    public int playerAVal, enemyStatsVal, fDiceTotal;
 
     public Text playerATxt,enemyATxt,winLoseTxt, enemyRollText;
 
@@ -32,11 +35,12 @@ public class EnemyTileManager : Photon.MonoBehaviour
         fPanel.SetActive(false);
         rPanel.SetActive(false);
 
-        playerAVal = 36;
-        enemyAVal = 50;
+        // TODO: To retrieve stats of the player and then change the value of the playerAVal.
+        playerAVal = Random.Range(55,80);
+        enemyStatsVal = Random.Range(45,80);
 
         playerATxt.text = playerAVal.ToString();
-        enemyATxt.text = enemyAVal.ToString();
+        enemyATxt.text = enemyStatsVal.ToString();
 
         enemyRollText.enabled = false;
         enemyRolling = false;
@@ -102,8 +106,8 @@ public class EnemyTileManager : Photon.MonoBehaviour
             yield return new WaitForSeconds(2);
             enemyRollText.text = "Enemy has rolled";
             enemyRolling = false;
-            enemyAVal = enemyAVal + first + second;
-            enemyATxt.text = enemyAVal.ToString();
+            enemyStatsVal = enemyStatsVal + first + second;
+            enemyATxt.text = enemyStatsVal.ToString();
             enemyRollText.enabled = false;
             FinalDecide();
         }
@@ -111,25 +115,29 @@ public class EnemyTileManager : Photon.MonoBehaviour
 
     void FinalDecide()
     {
-        if(playerAVal > enemyAVal)
-        {
-            winLoseTxt.color = Color.yellow;
-            winLoseTxt.fontSize = 25;
-            winLoseTxt.text = "Enemy defeated. You got coins.";
+ 
+            if (playerAVal > enemyStatsVal)
+            {
+                winLoseTxt.color = Color.yellow;
+                winLoseTxt.fontSize = 25;
+                winLoseTxt.text = "Enemy defeated. You got coins.";
 
-            coinObj.coinValue += 25;
-           // enemyPanel.SetActive(false);
-            //this.gameObject.SetActive(false);
-           // moveObj.canRoll = true;
-        }
-        else
-        {
-            winLoseTxt.color = Color.red;
-            winLoseTxt.text = "You got defeated.The enemy took your gold.";
+                coinObj.coinValue += 25;
+                closePanel = true;
+            canvasGO.enabled = false;
+                // enemyPanel.SetActive(false);
+                //this.gameObject.SetActive(false);
+                // moveObj.canRoll = true;
+            }
+            else
+            {
+                winLoseTxt.color = Color.red;
+                winLoseTxt.text = "You got defeated.The enemy took your gold.";
 
-            coinObj.coinValue -= 35;
-            enPanel.SetActive(false);
-            //moveObj.canRoll = true;
-        }
+                coinObj.coinValue -= 35;
+                closePanel = true;
+                //moveObj.canRoll = true;
+            }
+        
     }
 }

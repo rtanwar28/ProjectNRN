@@ -159,7 +159,7 @@ public class FileIO : MonoBehaviour
         //	Transform newPos = instantiatePos [(Random.Range (0, 1))];
 
         //	playerStartPos = startTileTransform.position + newPos.position;
-        Instantiate(playerPrefab, playerStartPos, Quaternion.identity);
+       // Instantiate(playerPrefab, playerStartPos, Quaternion.identity);
 
 
     }
