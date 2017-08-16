@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class TileEventManager : Photon.PunBehaviour
 {
-	GameObject storePanel, chancePanel, enemyPanel;
+    GameObject storePanel, chancePanel;
+    public GameObject enemyPanel;
 	public GameObject tempPanel;
 
     public GameObject[] enemyCardPrefabs = new GameObject[4];
@@ -19,7 +20,7 @@ public class TileEventManager : Photon.PunBehaviour
 	//PlayerMovement playerMovementObj;
 	DiceRoll rollObj;
 
-	public bool chanceTriggered;
+    public bool chanceTriggered, fightTriggered;
 
     // Variables for player position and rotation
     Vector3 playerPos, playerRot;
@@ -51,6 +52,7 @@ public class TileEventManager : Photon.PunBehaviour
             enemyPanel.SetActive(false);
 
             chanceTriggered = false;
+            fightTriggered = false;
 
         }
 	}
@@ -66,17 +68,6 @@ public class TileEventManager : Photon.PunBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-        //// Checking if the player triggered the enemy event
-        //if (other.tag == "Fight") //&& rollObj.diceTotal == 0)
-        //{
-        //    Debug.Log("enemy called");
-
-        //    //this.GetComponent<PlayerMovement>().canRoll = false;
-
-        //    other.gameObject.GetComponent<EnemyTileManager>().GetTileInfront(card);
-
-        //} 
-
             if (photonView.isMine)
         {
 
@@ -99,8 +90,9 @@ public class TileEventManager : Photon.PunBehaviour
             }
 
             // Checking if the player triggered the enemy event
-            if (other.tag == "Fight" && rollObj.diceTotal == 0)
+            if (other.tag == "Fight" && rollObj.diceTotal == 0 && !fightTriggered)
             {
+                fightTriggered = true;
                 Debug.Log("enemy called");
 
                 this.GetComponent<PlayerMovement>().canRoll = false;
@@ -126,28 +118,8 @@ public class TileEventManager : Photon.PunBehaviour
 
         // Instantiating the card game object.
         GameObject go = (GameObject)Instantiate(newCard, cardDestination, Quaternion.identity);
-        
 
-        if(playerRot.x == 90f)
-        {
-            go.transform.eulerAngles = new Vector3(0f, playerRot.y, playerRot.z);
-        }
-        else if(playerRot.y == 90f)
-        {
-            go.transform.eulerAngles = new Vector3(playerRot.x, 0f, playerRot.z);
-        }
-        else if (playerRot.z == 90f)
-        {
-            go.transform.eulerAngles = new Vector3(playerRot.x, playerRot.y, 0f);
-        }
-        else
-        {
-            go.transform.eulerAngles = new Vector3(90f, playerRot.y, playerRot.z);
-        }
-
-        // Setting the rotation of the card as per the rotation of the player.
-
-        // Debug.Log("newcard rot part 2: " + go.transform.eulerAngles);
+            go.transform.eulerAngles = new Vector3(90f, playerRot.y, 0f);
 
          StartCoroutine(RotateCard(go));
 
@@ -177,5 +149,6 @@ public class TileEventManager : Photon.PunBehaviour
 
         this.gameObject.GetComponent<PlayerMovement>().canRoll = true;
     }
+
 
 }

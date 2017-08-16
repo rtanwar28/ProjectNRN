@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class EnemyTileManager : Photon.MonoBehaviour
 {
+    TileEventManager tileManObj;
+
     public GameObject ePanel;
     public GameObject fPanel;
     public GameObject rPanel;
@@ -13,7 +15,9 @@ public class EnemyTileManager : Photon.MonoBehaviour
 
     DiceRoll diceRollObj;
     CoinManager coinObj;
-    //PlayerMovement moveObj;
+    PlayerMovement moveObj;
+
+    bool epVisible;
 
     public bool choiceSelected, isFightRoll, enemyRolling, closePanel;
 
@@ -27,7 +31,8 @@ public class EnemyTileManager : Photon.MonoBehaviour
     {
         diceRollObj = GameObject.Find("Dice").GetComponent<DiceRoll>();
         coinObj = GameObject.Find("Coins").GetComponent<CoinManager>();
-       // moveObj = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>();
+
+        epVisible = false;
 
         choiceSelected = false;
         isFightRoll = false;
@@ -47,6 +52,8 @@ public class EnemyTileManager : Photon.MonoBehaviour
         winLoseTxt.text = "";
 
         closePanel = false;
+
+
     }
 
     void Update()
@@ -64,7 +71,19 @@ public class EnemyTileManager : Photon.MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         enPanel = enemyPanel;
-        enemyPanel.SetActive(true);
+        //if(!epVisible)
+        //{
+			enemyPanel.SetActive(true);
+
+        //    epVisible = true;
+        //}
+
+        //else if (epVisible)
+        //{
+        //    enemyPanel.SetActive(false);
+        //    epVisible = false;
+        //}
+       
     }
 
     public void ChooseButton()
@@ -123,8 +142,11 @@ public class EnemyTileManager : Photon.MonoBehaviour
                 winLoseTxt.text = "Enemy defeated. You got coins.";
 
                 coinObj.coinValue += 25;
-                closePanel = true;
-            canvasGO.enabled = false;
+
+            fPanel.SetActive(false);
+
+          
+                // canvasGO.enabled = false;
                 // enemyPanel.SetActive(false);
                 //this.gameObject.SetActive(false);
                 // moveObj.canRoll = true;
@@ -135,9 +157,26 @@ public class EnemyTileManager : Photon.MonoBehaviour
                 winLoseTxt.text = "You got defeated.The enemy took your gold.";
 
                 coinObj.coinValue -= 35;
-                closePanel = true;
+            fPanel.SetActive(false);
+          
+
                 //moveObj.canRoll = true;
             }
+
+        if (photonView.isMine)
+        {
+            tileManObj = GameObject.FindGameObjectWithTag("Player").GetComponent<TileEventManager>();
+
+            tileManObj.fightTriggered = false;
+            Debug.Log("The fight triggered");
+            moveObj = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+
+            moveObj.canRoll = true;
+
+            //Destroy(tileManObj.card);
+            DestroyImmediate(tileManObj.card, true);
+
+        }
         
     }
 }

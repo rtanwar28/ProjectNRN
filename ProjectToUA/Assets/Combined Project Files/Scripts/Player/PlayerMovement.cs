@@ -136,11 +136,7 @@ public class PlayerMovement : Photon.PunBehaviour
             }
         }
 
-        if(etmObj.closePanel)
-        {
-            //etmObj.canvasGO.gameObject
-            canRoll = true;
-        }
+       
 
 	}
 
