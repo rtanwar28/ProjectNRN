@@ -82,6 +82,9 @@ public class PlayerMovement : Photon.PunBehaviour
                 gameObject.transform.position = Vector3.Lerp(startPos, newPos, i);
                 yield return null;
             }
+
+            if(gameObject.GetComponent<TileEventManager>().fightTriggered)
+            gameObject.GetComponent<TileEventManager>().fightTriggered = false;
         }
 	}
 

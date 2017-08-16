@@ -11,6 +11,7 @@ public class TileEventManager : Photon.PunBehaviour
     GameObject storePanel, chancePanel;
     public GameObject enemyPanel;
 	public GameObject tempPanel;
+    public GameObject go;
 
     public GameObject[] enemyCardPrefabs = new GameObject[4];
     EnemyTileManager enemyTileManager;
@@ -31,6 +32,7 @@ public class TileEventManager : Photon.PunBehaviour
 	{
         enemyTileManager = GameObject.FindWithTag("enemy").GetComponent<EnemyTileManager>();
 
+
         // Getting the Player Gameobject, player position and player rotation
         playerGO = GameObject.FindWithTag("Player");
         playerPos = GameObject.FindWithTag("Player").transform.position;
@@ -48,7 +50,7 @@ public class TileEventManager : Photon.PunBehaviour
             chancePanel = GameObject.FindGameObjectWithTag("chance");
             chancePanel.SetActive(false);
 
-            enemyPanel = GameObject.FindGameObjectWithTag("enemy");
+            enemyPanel = GameObject.FindGameObjectWithTag("enemy").transform.Find("EnemyPanel").gameObject;
             enemyPanel.SetActive(false);
 
             chanceTriggered = false;
@@ -117,14 +119,11 @@ public class TileEventManager : Photon.PunBehaviour
         Vector3 cardDestination = new Vector3(playerDest.x,0.85f, playerDest.z);
 
         // Instantiating the card game object.
-        GameObject go = (GameObject)Instantiate(newCard, cardDestination, Quaternion.identity);
+        go = (GameObject)Instantiate(newCard, cardDestination, Quaternion.identity);
 
             go.transform.eulerAngles = new Vector3(90f, playerRot.y, 0f);
 
          StartCoroutine(RotateCard(go));
-
-        // StartCoroutine(CardPanel());
-
     }
 
     
@@ -143,7 +142,7 @@ public class TileEventManager : Photon.PunBehaviour
             cardGO.transform.rotation = Quaternion.Lerp(Quaternion.Euler(cardGO.transform.eulerAngles), Quaternion.Euler(0f, cardGO.transform.eulerAngles.y, cardGO.transform.eulerAngles.z), i);
 
                 yield return null;
-                StartCoroutine(enemyTileManager.CardPanel(tempPanel));
+                StartCoroutine(enemyTileManager.CardPanel());
             }
         }
 
