@@ -67,42 +67,127 @@ public class PlayerMovement : Photon.PunBehaviour
         }
 	}
 
-	void Update()
-	{
-		if (photonView.isMine)
-		{
+    protected void Update()
 
-			if (canRoll && Input.GetKeyDown(KeyCode.Space))
-			{
-				canRoll = false;
-				diceObj.RollDice();
-			}
+    {
+        if (photonView.isMine)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                RollDice();
 
-			if (Input.GetKeyDown(KeyCode.UpArrow) && (diceObj.diceTotal != 0 || extraMoveCount != 0 || extraM))
-			{
-				playerPos = this.transform.position;
-				playerDest = playerPos + transform.forward * 2f;
-				tileDestination = new Vector3(playerDest.x, playerDest.y - 1.25f, playerDest.z);
-				PlayerMove(tileDestination);
-			}
-			else if (Input.GetKeyDown(KeyCode.RightArrow) && (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM))
-			{
-				StartCoroutine(rotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
-    
+            if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKeyDown(KeyCode.W)))
+                MoveForward();
+
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || (Input.GetKeyDown(KeyCode.D)))
+                MoveRight();
+
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || (Input.GetKeyDown(KeyCode.A)))
+                MoveLeft();
+
+        }
+    }
+
+    public void RollDice()
+    {
+        if (photonView.isMine)
+        {
+            Debug.Log("In Roll dice");
+            if (canRoll)
+            {
+                Debug.Log("canRoll value: " + canRoll);
+
+                diceObj.RollDice(); Debug.Log("diceObj.RollDice() is called");
+                canRoll = false; Debug.Log("canRoll value is now: " + canRoll);
+
+            }
+            else if (!canRoll)
+            {
+                Debug.Log("not able to roll dice...");
+            }
+        }
+    }
+
+    public void MoveForward()
+    {
+        if (photonView.isMine)
+        {
+            if ((diceObj.diceTotal != 0 || extraMoveCount != 0 || extraM))
+            {
+                Debug.Log("player moving forward");
+                playerPos = this.transform.position;
+                playerDest = playerPos + transform.forward * 2f;
+                tileDestination = new Vector3(playerDest.x, playerDest.y - 1.25f, playerDest.z);
+                PlayerMove(tileDestination);
+            }
+        }
+    }
+
+
+    public void MoveRight()
+    {
+        if (photonView.isMine)
+        {
+            if (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM)
+            {
+                StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
                 if (!leftRot)
                     rightRot = true;
-                 leftRot = false;
-			}
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM))
-			{
-                StartCoroutine(rotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
+                leftRot = false;
+            }
+        }
+    }
 
+    public void MoveLeft()
+    {
+        if (photonView.isMine)
+        {
+            if (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM)
+            {
+                StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
                 if (!rightRot)
                     leftRot = true;
                 rightRot = false;
-			}
-		}
-	}
+            }
+        }
+    }
+
+
+ //   void Update()
+	//{
+	//	if (photonView.isMine)
+	//	{
+
+	//		if (canRoll && Input.GetKeyDown(KeyCode.Space))
+	//		{
+	//			canRoll = false;
+	//			diceObj.RollDice();
+	//		}
+
+	//		if (Input.GetKeyDown(KeyCode.UpArrow) && (diceObj.diceTotal != 0 || extraMoveCount != 0 || extraM))
+	//		{
+	//			playerPos = this.transform.position;
+	//			playerDest = playerPos + transform.forward * 2f;
+	//			tileDestination = new Vector3(playerDest.x, playerDest.y - 1.25f, playerDest.z);
+	//			PlayerMove(tileDestination);
+	//		}
+	//		else if (Input.GetKeyDown(KeyCode.RightArrow) && (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM))
+	//		{
+	//			StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
+    
+ //               if (!leftRot)
+ //                   rightRot = true;
+ //                leftRot = false;
+	//		}
+ //           else if (Input.GetKeyDown(KeyCode.LeftArrow) && (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM))
+	//		{
+ //               StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
+
+ //               if (!rightRot)
+ //                   leftRot = true;
+ //               rightRot = false;
+	//		}
+	//	}
+	//}
 
 	public IEnumerator FollowPlayer (Vector3 startPos, Vector3 newPos)
 	{
@@ -126,7 +211,7 @@ public class PlayerMovement : Photon.PunBehaviour
         }
 	}
 
-	IEnumerator rotatePlayer (Quaternion startRot, Quaternion newRot)
+	IEnumerator RotatePlayer (Quaternion startRot, Quaternion newRot)
 	{
         if (photonView.isMine)
         {
@@ -229,12 +314,13 @@ public class PlayerMovement : Photon.PunBehaviour
     {
         if (other.gameObject.name == "FinishPoint" && !isTimerActive)
         {
-			timerTxt.gameObject.SetActive((true));
+            timerTxt.gameObject.SetActive((true));
 
-			isTimerActive = true;
+            isTimerActive = true;
+
+            diceObj.GameEnd();
         }
     }
-
 }
 
 /* TO DO:

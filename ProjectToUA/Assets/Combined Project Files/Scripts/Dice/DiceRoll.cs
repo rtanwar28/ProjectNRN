@@ -21,15 +21,32 @@ public class DiceRoll : MonoBehaviour
 	public Sprite zero, one, two, three, four, five, six;
 
 	public Text diceText;
+    public GameObject diceRollButton;
 
 	// Display the dice text based on the total value of the dice
 	void Update ()
 	{
-		if (diceTotal != 0)
-			diceText.enabled = false;
-		else
-			diceText.enabled = true;		
-	}
+        if (diceTotal != 0)
+        {
+#if UNITY_EDITOR
+            diceText.enabled = false;
+#endif
+
+#if !UNITY_EDITOR
+            diceRollButton.SetActive(false);
+#endif
+        }
+        else
+        {
+#if UNITY_EDITOR
+            diceText.enabled = true;
+#endif
+
+#if !UNITY_EDITOR
+            diceRollButton.SetActive(true);
+#endif
+        }
+    }
 
     // Generate random number for the main dice values
 	public void RollDice ()
@@ -111,4 +128,12 @@ public class DiceRoll : MonoBehaviour
 			break;
 		}
 	}
+
+    public void GameEnd()
+    {
+        ResetFightDice();
+        Time.timeScale = 0;
+
+        Debug.Log("Game End");
+    }
 }

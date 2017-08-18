@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Combined Project Files/Scenes/Menu/LogInRegister_UI.unity
+- path: Assets/Combined Project Files/Scenes/Game/Level1.unity
   isLoaded: 1
   isActive: 1
