@@ -39,8 +39,10 @@ public class FileIO : MonoBehaviour
 
         boardMap = new char[5, 10];
 
-        //Creating the file path
-        string filePath = Application.dataPath + Path.DirectorySeparatorChar + "Combined Project Files" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar;
+		//Creating the file path
+		//string filePath = Application.dataPath + Path.DirectorySeparatorChar + "Combined Project Files" + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar;
+
+		string filePath = Application.dataPath + Path.DirectorySeparatorChar + "Resources" + Path.DirectorySeparatorChar;
 
         //Creating a stream reader in order to read the contents in the text file
         sr = new StreamReader(filePath + "MapEditor.txt");

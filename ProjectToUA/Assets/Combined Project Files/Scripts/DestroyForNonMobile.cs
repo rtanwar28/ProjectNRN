@@ -11,7 +11,7 @@ public class DestroyForNonMobile : MonoBehaviour
     void Start()
     {
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE
 
         Destroy(this.gameObject);
 

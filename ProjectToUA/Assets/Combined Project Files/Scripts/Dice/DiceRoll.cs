@@ -32,20 +32,20 @@ public class DiceRoll : MonoBehaviour
             diceText.enabled = false;
 #endif
 
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR || !UNITY_STANDALONE || UNITY_ANDROID
             diceRollButton.SetActive(false);
 #endif
-        }
+		}
         else
         {
 #if UNITY_EDITOR
             diceText.enabled = true;
 #endif
 
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR || !UNITY_STANDALONE || UNITY_ANDROID
             diceRollButton.SetActive(true);
 #endif
-        }
+		}
     }
 
     // Generate random number for the main dice values
