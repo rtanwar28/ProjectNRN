@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class IconAnimationScript : MonoBehaviour
 {
-
+    // Transform values of the icon
 	Transform icon;
+    // Declaring the variables for the icon animation
 	float min, max;
 	public float distMin, distMax, pingPongSpeed, rotationSpeed;
 	public bool rotateRight;
 
-	// Use this for initialization
+	// Setting the minimum and maximum distance and setting the rotation of the icon.
 	void Start ()
 	{
 		icon = this.transform;
@@ -21,7 +22,7 @@ public class IconAnimationScript : MonoBehaviour
 			rotationSpeed = -1 * rotationSpeed;
 	}
 	
-	// Update is called once per frame
+	// Updating the rotation and position of the icon every frame.
 	void Update ()
 	{
 

@@ -5,24 +5,27 @@ using UnityEngine.UI;
 
 public class StoreTileManager : MonoBehaviour 
 {
+	// Reference to the CoinManager script.
 	CoinManager coinObj;
 
-	// Use this for initialization
 	void Start () 
 	{
+		// Getting the CoinManager script component by finding the "Coins" gameobject.
 		coinObj = GameObject.Find ("Coins").GetComponent<CoinManager> ();
 	}
 	
-	// Update is called once per frame
 	void Update () 
 	{
+        // Setting the coin value that is displayed.
 		coinObj.coinValText.text = "" + coinObj.coinValue.ToString();
 
+        // if the coin value is less than equal to 0, set it as 0.
 		if(coinObj.coinValue<=0)
 		{
 			coinObj.coinValText.text = "0";
 		}
 	}
+
 
 	public void SelectItem(Button button)
 	{

@@ -5,17 +5,17 @@ using System.IO;
 
 public class FileIO : MonoBehaviour
 {
+    // For the environment blocks.
     public GameObject greenGrass, darkGrass, blueWater, darkWater, yellowSand, brownMud, chanceTile, storeTile, enemyTile, treePrefab, playerPrefab;
-    // for the event tiles
+    // For the event tiles
     public GameObject chanceBlock, storeBlock, enemyBlock;
-
-    //public GameObject[] enemyCardPrefabs = new GameObject[4];
-
 
     public Transform[] instantiatePos = new Transform[2];
 
+    // For the player's positon.
     public Vector3 playerStartPos;
 
+    // Camera to display the minimap.
     Camera minimapCamera;
 
     StreamReader sr;
@@ -23,17 +23,20 @@ public class FileIO : MonoBehaviour
 
     int j, k, tileRot, treeK, treeJ, treeRot, minimapZPos;
 
+    // To store the transform values of the blocks.
     public List<Transform> prefabTransforms;
 
     // Use this for initialization
     void Start()
     {
+        // Getting the camera component from the "Minimap Camera" game object.
         minimapCamera = GameObject.Find("Minimap Camera").GetComponent<Camera>();
 
         prefabTransforms = new List<Transform>();
 
         j = 0;
         k = 0;
+
         boardMap = new char[5, 10];
 
         //Creating the file path
@@ -78,6 +81,7 @@ public class FileIO : MonoBehaviour
                     //Instantiate trees at random spots on tile with varying scale and rotation.
                     int q = Random.Range(1, 4);
                     int r = Random.Range(5, 15);
+                    // To randomly generate the trees and setting there rotation.
                     for (int z = 1; z <= q; z++)
                     {
                         treeK = Random.Range(-8, 8);
@@ -96,7 +100,8 @@ public class FileIO : MonoBehaviour
                     //Instantiate trees at random spots on tile with varying scale and rotation.
                     int q = Random.Range(1, 4);
                     int r = Random.Range(5, 15);
-                    for (int z = 1; z <= q; z++)
+					// To randomly generate the trees and setting there rotation.
+					for (int z = 1; z <= q; z++)
                     {
                         treeK = Random.Range(-8, 8);
                         treeJ = Random.Range(-8, 8);
@@ -114,47 +119,50 @@ public class FileIO : MonoBehaviour
                 else if (test[i] == 'm')
                     Instantiate(brownMud, new Vector3(k * 2, 0, j * 2), Quaternion.Euler(0f, 90f * tileRot, 0f));
 
-                else if (test[i] == 'c')
+				// Instantiating the chance block prefab
+				else if (test[i] == 'c')
                 {
                     prefabTransforms.Add(Instantiate(chanceBlock, new Vector3(k * 2, 0, j * 2), Quaternion.Euler(0f, 90f, 0f)).transform);
                     Instantiate(chanceTile, new Vector3(k * 2, 1.26f, j * 2), Quaternion.Euler(0f, 90f * tileRot, 0f));
                 }
 
-                else if (test[i] == 's')
+				// Instantiating the store block prefab
+				else if (test[i] == 's')
                 {
                     prefabTransforms.Add(Instantiate(storeBlock, new Vector3(k * 2, 0, j * 2), Quaternion.Euler(0f, 90f, 0f)).transform);
                     Instantiate(storeTile, new Vector3(k * 2, 1.26f, j * 2), Quaternion.Euler(0f, 90f, 0f));
                 }
 
-                else if (test[i] == 'e')
+				// Instantiating the enemy block prefab
+				else if (test[i] == 'e')
                 {
                     //int enemyCardRandom = Random.Range(0, 4);
 
                     prefabTransforms.Add(Instantiate(enemyBlock, new Vector3(k * 2, 0, j * 2), Quaternion.Euler(0f, 90f, 0f)).transform);
                     Instantiate(enemyTile, new Vector3(k * 2, 1.26f, j * 2), Quaternion.Euler(0f, 90f, 0f));
-                    //Instantiate(enemyCardPrefabs[enemyCardRandom], new Vector3(k * 2, -0.2f, ((j * 2) + 0.8f)), Quaternion.Euler(0f, 0f, 0f));
                 }
-
-                k++;
+				// Setting the value of k to the next row
+				k++;
 
             }
             else
             {
-                // Setting the value of k to the next row
-                j--;
-                // Resetting the value of j in order to start from the 0th column
+				// Resetting the value of j in order to start from the 0th column
+				j--;
                 k = 0;
             }
         }
 
+        // Setting the position of the minimap camera.
         minimapCamera.transform.position = new Vector3(k - 1, 5f, minimapZPos);
         if (minimapZPos > k)
             minimapCamera.orthographicSize = minimapZPos + 1;
         else
             minimapCamera.orthographicSize = k + 1;
 
-        Transform startTileTransform = prefabTransforms[94]; //Select the tile to instantiate player on from 'prefabTransform' list.
-        playerStartPos = startTileTransform.position + new Vector3(0f, 1.25f, 0f); //To figure out later
+		//Select the tile to instantiate player on from 'prefabTransform' list.
+		Transform startTileTransform = prefabTransforms[94]; 
+        playerStartPos = startTileTransform.position + new Vector3(0f, 1.25f, 0f); 
 
         //	Transform newPos = instantiatePos [(Random.Range (0, 1))];
 

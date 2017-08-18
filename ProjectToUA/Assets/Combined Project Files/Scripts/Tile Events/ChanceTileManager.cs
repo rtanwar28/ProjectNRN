@@ -5,23 +5,25 @@ using UnityEngine.UI;
 
 public class ChanceTileManager : MonoBehaviour 
 {
-
+    // Storing the good and bad cards in individual array.
 	public GameObject[] goodCards = new GameObject[3];
 	public GameObject[] badCards = new GameObject[3];
 
-	GameObject gCard, bCard, cp;//, checkCard;
+	GameObject gCard, bCard, cp;
 	string activeCard;
 
 	bool isGood, isBad, isCoinChance;
 
+	// Reference to the CoinManager script.
 	CoinManager coinObj;
+	// Reference to the PlayerMovement script.
 	PlayerMovement playerMoveObj;
 
 	public int extraMoves;
 
-	// Use this for initialization
 	void Start () 
 	{
+		// Getting the CoinManager script component by finding the "Coins" gameobject.
 		coinObj = GameObject.Find ("Coins").GetComponent<CoinManager> ();
 
 		cp = this.gameObject;
@@ -32,18 +34,12 @@ public class ChanceTileManager : MonoBehaviour
 		isBad = false;
 		isCoinChance = false;
 	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
 
+    // Generate a random good card to display it.
 	public void SelectGoodCard()
 	{
 		if(activeCard == null)
 		{
-			
 			int random = Random.Range (0, 3);
 
 			gCard = goodCards [random];
@@ -51,14 +47,14 @@ public class ChanceTileManager : MonoBehaviour
 			gCard.SetActive (true);
 			isGood = true;
 			activeCard = gCard.name;
-			Debug.Log ("Active Card: " + activeCard);
 
-			//StartCoroutine (WaitForPanel());
+			// Setting to set the chance triggered value to false.
 			GameObject.FindWithTag ("Player").GetComponent<TileEventManager> ().chanceTriggered = false;
 			PerformAction (activeCard);
 		}
 	}
 
+	// Generate a random bad card to display it.
 	public void SelectBadCard()
 	{
 		if (activeCard == null) 
@@ -71,18 +67,17 @@ public class ChanceTileManager : MonoBehaviour
 			isBad = true;
 
 			activeCard = bCard.name;
-			Debug.Log ("Active Card: " + activeCard);
 
-			//StartCoroutine (WaitForPanel ());
+			// Setting to set the chance triggered value to false.
 			GameObject.FindWithTag ("Player").GetComponent<TileEventManager> ().chanceTriggered = false;
 			PerformAction (activeCard);
 		}
 	}
-		
+	
+    // To close the chance panel.
 	public void CloseChancePanel()
 	{
 		cp.SetActive (false);
-
 	}
 
 	IEnumerator WaitForPanel()
@@ -109,6 +104,7 @@ public class ChanceTileManager : MonoBehaviour
 
     }
 
+    // Based on the card the player selects perform the specific action.
 	void PerformAction(string selectedCard)
 	{
 		switch(selectedCard)
@@ -127,7 +123,6 @@ public class ChanceTileManager : MonoBehaviour
 			extraMoves = 2;
 			playerMoveObj = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
 			playerMoveObj.extraM = true;
-			//Debug.Log ("G2 works");
 			StartCoroutine (WaitForPanel ());
 			break;
 
@@ -136,7 +131,6 @@ public class ChanceTileManager : MonoBehaviour
 			extraMoves = 5;
 			playerMoveObj = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
 			playerMoveObj.extraM = true;
-			//Debug.Log ("G3 works");
 			StartCoroutine (WaitForPanel ());
 			break;
 
@@ -145,35 +139,22 @@ public class ChanceTileManager : MonoBehaviour
 			coinObj.coinValue -= 25f;
 			isCoinChance = true;
 			StartCoroutine (WaitForPanel ());
-			//Debug.Log ("B1 works");
 			break;
 		case "BadCard_2":
-			
-			/*playerMoveObj = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
-			for (int x=0;x<3;x++)
-			{
-				Transform destTransform = playerMoveObj.playerMoveHistory.Peek ();
-				//playerMoveObj.playerMoveHistory.Pop ();
-				Debug.Log (x+": "+destTransform.position);
-				StartCoroutine (playerMoveObj.FollowPlayer (GameObject.FindGameObjectWithTag ("Player").transform.position,destTransform.position));
-				GameObject.FindGameObjectWithTag ("Player").transform.rotation = destTransform.rotation;
-			}*/
-
 			coinObj.coinValue -= 5f;
 			isCoinChance = true;
 			StartCoroutine (WaitForPanel ());
-			//Debug.Log ("B2 works");
 			break;
 		case "BadCard_3":
 			
 			coinObj.coinValue -= 10f;
 			isCoinChance = true;
 			StartCoroutine (WaitForPanel ());
-			//Debug.Log ("B3 works");
 			break;
 		default:
 			break;
 		}
+        // Setting the active card to null.
 		activeCard = null;
 	}
 

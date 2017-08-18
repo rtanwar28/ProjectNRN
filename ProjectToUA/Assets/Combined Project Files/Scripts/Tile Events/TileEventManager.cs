@@ -3,35 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-//-0.2 -> 1.8 (y axis)
-
 public class TileEventManager : Photon.PunBehaviour
 {
     GameObject storePanel, chancePanel;
     public GameObject enemyPanel;
+
+    // To store the active panel temporary
 	public GameObject tempPanel;
+
+    // Stores the enemy card game object
     public GameObject go;
 
+    // Stores the different enemy cards
     public GameObject[] enemyCardPrefabs = new GameObject[4];
+
+    // Reference to the Enemy Tile Manager Script
     EnemyTileManager enemyTileManager;
 
+    // Reference to the Enemy Card that pops up.
     public GameObject card;
 
-	//PlayerMovement playerMovementObj;
+    // Reference to the DiceRoll script.
 	DiceRoll rollObj;
 
+    // Bool value that will keep a check to activate/deactivate a panel.
+    public bool showEnemy;
+
+    // For triggering the specific events.
     public bool chanceTriggered, fightTriggered;
 
-    // Variables for player position and rotation
+    // Variables for player position and rotation.
     Vector3 playerPos, playerRot;
+
+    // Stores the player game object.
     GameObject playerGO;
 
     // Use this for initialization
     void Start () 
 	{
+        // Getting the EnemyTileManager script component from a game object with tag "enemy".
         enemyTileManager = GameObject.FindWithTag("enemy").GetComponent<EnemyTileManager>();
-
 
         // Getting the Player Gameobject, player position and player rotation
         playerGO = GameObject.FindWithTag("Player");
@@ -43,14 +54,14 @@ public class TileEventManager : Photon.PunBehaviour
             //playerMovementObj = this.GetComponent<PlayerMovement>();
             rollObj = GameObject.Find("Dice").GetComponent<DiceRoll>();
 
-            // Getting and setting the panels in a false state
+            // Getting and setting the panels to a false state
             storePanel = GameObject.FindGameObjectWithTag("store");
             storePanel.SetActive(false);
 
             chancePanel = GameObject.FindGameObjectWithTag("chance");
             chancePanel.SetActive(false);
 
-            enemyPanel = GameObject.FindGameObjectWithTag("enemy").transform.Find("EnemyPanel").gameObject;
+            enemyPanel = GameObject.FindGameObjectWithTag("enemy").transform.Find("EnemyChoicePanel").gameObject;
             enemyPanel.SetActive(false);
 
             chanceTriggered = false;
@@ -67,16 +78,13 @@ public class TileEventManager : Photon.PunBehaviour
         playerRot = playerGO.transform.eulerAngles;
     }
 
-
+    // OnTriggerEnter function to check with what game object has the player collided and set the panel active.
 	void OnTriggerEnter(Collider other)
 	{
-            if (photonView.isMine)
+        if (photonView.isMine)
         {
-
             if (other.tag == "Shop" && rollObj.diceTotal == 0)
             {
-
-                Debug.Log("Store called");
                 tempPanel = storePanel;
                 tempPanel.SetActive(true);
             }
@@ -85,8 +93,8 @@ public class TileEventManager : Photon.PunBehaviour
             if (other.tag == "QMark" && rollObj.diceTotal == 0 && this.GetComponent<PlayerMovement>().extraMoveCount == 0 && !chanceTriggered)
             {
                 chanceTriggered = true;
+                // Setting the ability to roll the dice to false.
                 this.GetComponent<PlayerMovement>().canRoll = false;
-                Debug.Log("chance called");
                 tempPanel = chancePanel;
                 tempPanel.SetActive(true);
             }
@@ -95,16 +103,17 @@ public class TileEventManager : Photon.PunBehaviour
             if (other.tag == "Fight" && rollObj.diceTotal == 0 && !fightTriggered)
             {
                 fightTriggered = true;
-                Debug.Log("enemy called");
+				// Setting the ability to roll the dice to false.
+				this.GetComponent<PlayerMovement>().canRoll = false;
 
-                this.GetComponent<PlayerMovement>().canRoll = false;
+                // Randomly generating the card to be displayed.
                 card = enemyCardPrefabs[Random.Range(0, 4)];
+
                 GetTileInfront(card);
 
                 tempPanel = enemyPanel;
-               // tempPanel.SetActive(true);
-                // TODO!
-                //RAISE THE ENEMY CARD ON Y AXIS TO 0.87f
+                tempPanel.SetActive(true);
+
             }
         }
 	}
@@ -121,31 +130,34 @@ public class TileEventManager : Photon.PunBehaviour
         // Instantiating the card game object.
         go = (GameObject)Instantiate(newCard, cardDestination, Quaternion.identity);
 
-            go.transform.eulerAngles = new Vector3(90f, playerRot.y, 0f);
-
-         StartCoroutine(RotateCard(go));
+        // Setting the inital rotation value of the card
+        go.transform.eulerAngles = new Vector3(90f, playerRot.y, 0f);
+            
+        StartCoroutine(RotateCard(go));
     }
 
-    
-
+    // This allow for the card to rotate from one angle value to another
     IEnumerator RotateCard(GameObject cardGO)
     {
-        Debug.Log("x Rotate: " + cardGO.transform.eulerAngles.x);
         if (photonView.isMine)
         {
-        float time = 0.7f;
-        float i = 0f;
-        float rate = 1f / time;
-        while (i < 1)
-        {
-            i = Time.deltaTime * rate;
-            cardGO.transform.rotation = Quaternion.Lerp(Quaternion.Euler(cardGO.transform.eulerAngles), Quaternion.Euler(0f, cardGO.transform.eulerAngles.y, cardGO.transform.eulerAngles.z), i);
+            // Setting the value to true in order to display the panel
+            showEnemy = true;
+            float time = 0.7f;
+            float i = 0f;
+            float rate = 1f / time;
+            while (i < 1)
+            {
+                i = Time.deltaTime * rate;
+                cardGO.transform.rotation = Quaternion.Lerp(Quaternion.Euler(cardGO.transform.eulerAngles), Quaternion.Euler(0f, cardGO.transform.eulerAngles.y, cardGO.transform.eulerAngles.z), i);
 
                 yield return null;
+
+                // Starting the CardPanel coroutine in the EnemyTileManager script.
                 StartCoroutine(enemyTileManager.CardPanel());
             }
         }
-
+        // Setting the ability to roll the dice to true.
         this.gameObject.GetComponent<PlayerMovement>().canRoll = true;
     }
 

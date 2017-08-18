@@ -9,10 +9,9 @@ public class PlayerMovement : Photon.PunBehaviour
 	FileIO fileIOObj;
 	DiceRoll diceObj;
 
-	//public GameObject playerPrefab;
 	Vector3 playerPos, playerDest, tileDestination;
 
-	bool canMove, leftRot, rightRot, isTimerActive;
+    public bool canMove, leftRot, rightRot, isTimerActive;
 	public bool canRoll;
 
 	public int extraMoveCount;
@@ -64,9 +63,45 @@ public class PlayerMovement : Photon.PunBehaviour
             canMove = false;
             leftRot = false;
             rightRot = false;
-
             //playerMoveHistory = new Stack<Transform>();
         }
+	}
+
+	void Update()
+	{
+		if (photonView.isMine)
+		{
+
+			if (canRoll && Input.GetKeyDown(KeyCode.Space))
+			{
+				canRoll = false;
+				diceObj.RollDice();
+			}
+
+			if (Input.GetKeyDown(KeyCode.UpArrow) && (diceObj.diceTotal != 0 || extraMoveCount != 0 || extraM))
+			{
+				playerPos = this.transform.position;
+				playerDest = playerPos + transform.forward * 2f;
+				tileDestination = new Vector3(playerDest.x, playerDest.y - 1.25f, playerDest.z);
+				PlayerMove(tileDestination);
+			}
+			else if (Input.GetKeyDown(KeyCode.RightArrow) && (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM))
+			{
+				StartCoroutine(rotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
+    
+                if (!leftRot)
+                    rightRot = true;
+                 leftRot = false;
+			}
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM))
+			{
+                StartCoroutine(rotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
+
+                if (!rightRot)
+                    leftRot = true;
+                rightRot = false;
+			}
+		}
 	}
 
 	public IEnumerator FollowPlayer (Vector3 startPos, Vector3 newPos)
@@ -83,8 +118,11 @@ public class PlayerMovement : Photon.PunBehaviour
                 yield return null;
             }
 
-            if(gameObject.GetComponent<TileEventManager>().fightTriggered)
-            gameObject.GetComponent<TileEventManager>().fightTriggered = false;
+            if (gameObject.GetComponent<TileEventManager>().fightTriggered)
+            {
+                gameObject.GetComponent<TileEventManager>().fightTriggered = false;
+            }
+            
         }
 	}
 
@@ -102,45 +140,6 @@ public class PlayerMovement : Photon.PunBehaviour
                 yield return null;
             }
         }
-	}
-
-	void Update()
-	{
-        if (photonView.isMine)
-        {
-
-            if (canRoll && Input.GetKeyDown(KeyCode.Space))
-            {
-                canRoll = false;
-                diceObj.RollDice();
-            }
-
-            if (Input.GetKeyDown(KeyCode.UpArrow) && (diceObj.diceTotal != 0 || extraMoveCount != 0 || extraM))
-            {
-                playerPos = this.transform.position;
-                playerDest = playerPos + transform.forward * 2f;
-                tileDestination = new Vector3(playerDest.x, playerDest.y - 1.25f, playerDest.z);
-                PlayerMove(tileDestination);
-            }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) && (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM))
-            {
-                StartCoroutine(rotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
-                if (!leftRot)
-                    rightRot = true;
-                leftRot = false;
-
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) && (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM))
-            {
-                StartCoroutine(rotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
-                if (!rightRot)
-                    leftRot = true;
-                rightRot = false;
-            }
-        }
-
-       
-
 	}
 
 	void PlayerMove (Vector3 playerDestination)
@@ -197,15 +196,8 @@ public class PlayerMovement : Photon.PunBehaviour
                     }
                     leftRot = false;
                     rightRot = false;
-
-
-                    //Debug.Log (playerMoveHistory.Peek ().position+ "\n"+ playerMoveHistory.Peek().rotation);
                 }
-
-
-
             }
-
 
             if (diceObj.diceTotal == 0 && extraMoveCount == 0)
             {

@@ -6,22 +6,23 @@ using UnityEngine.UI;
 
 public class DiceRoll : MonoBehaviour
 {
-
+    // For the main dice for movement.
 	public int diceRolledA, diceRolledB, diceTotal;
-    public Image diceA, diceB;
-	public Sprite zero, one, two, three, four, five, six;
-	public Text diceText;
 
+    // For the enemy fight dice.
     public int fightDiceRollA, fightDiceRollB, fightDiceTotal;
+
+    // Image to display for the main dice.
+    public Image diceA, diceB;
+
+    // Image to display for the fight dice.
     public Image fightDiceA, fightDiceB;
 
-	// Use this for initialization
-	void Start ()
-	{
+	public Sprite zero, one, two, three, four, five, six;
 
-    }
-	
-	// Update is called once per frame
+	public Text diceText;
+
+	// Display the dice text based on the total value of the dice
 	void Update ()
 	{
 		if (diceTotal != 0)
@@ -30,23 +31,27 @@ public class DiceRoll : MonoBehaviour
 			diceText.enabled = true;		
 	}
 
+    // Generate random number for the main dice values
 	public void RollDice ()
 	{
-		//diceRolledA = Random.Range (1, 7);
-		//diceRolledB = Random.Range (1, 7);
-		diceRolledA = 1;
-		diceRolledB = 1;
+		diceRolledA = Random.Range (1, 7);
+		diceRolledB = Random.Range (1, 7);
+		/* Can be set for testing purposes
+        diceRolledA = 1;
+		diceRolledB = 1;*/
 		diceTotal = diceRolledA + diceRolledB;
 		DisplayDice (diceRolledA, diceRolledB);
 	}
 
+    // Method to call another method display the main dice images.
 	public void DisplayDice (int a, int b)
 	{
 		showDice (diceA, a);
 		showDice (diceB, b);
 	}
 
-    public void FightRollDice()
+	// Generate random number for fight dice values
+	public void FightRollDice()
     {
         fightDiceRollA = Random.Range(1, 7);
         fightDiceRollB = Random.Range(1, 7);
@@ -55,16 +60,25 @@ public class DiceRoll : MonoBehaviour
         FightDisplayDice(fightDiceRollA, fightDiceRollB);
     }
 
-    public void FightDisplayDice(int a, int b)
+	// Method to call another method display the fight main dice images.
+	public void FightDisplayDice(int a, int b)
     {
         showDice(fightDiceA, a);
         showDice(fightDiceB, b);
     }
 
+    // Resetting the value for the fight dices.
+    public void ResetFightDice()
+    {
+		showDice(fightDiceA, 0);
+		showDice(fightDiceB, 0);
+    }
 
+    // Displaying the image of the dice
     void showDice (Image img, int x)
 	{
-		switch (x) {
+		switch (x) 
+        {
 		case 0:
 			img.sprite = zero;
 			break;
