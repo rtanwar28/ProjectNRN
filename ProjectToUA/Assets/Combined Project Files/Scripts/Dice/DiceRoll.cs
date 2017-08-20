@@ -60,8 +60,17 @@ public class DiceRoll : MonoBehaviour
 		DisplayDice (diceRolledA, diceRolledB);
 	}
 
+    public int StartRoll()
+    {
+        diceRolledA = Random.Range(1, 7);
+        diceRolledB = Random.Range(1, 7);
+        diceTotal = diceRolledA + diceRolledB;
+
+        return diceTotal;
+    }
+
     // Method to call another method display the main dice images.
-	public void DisplayDice (int a, int b)
+    public void DisplayDice (int a, int b)
 	{
 		showDice (diceA, a);
 		showDice (diceB, b);
@@ -132,7 +141,7 @@ public class DiceRoll : MonoBehaviour
     public void GameEnd()
     {
         ResetFightDice();
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
 
         Debug.Log("Game End");
     }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
 
@@ -20,21 +21,28 @@ namespace NRN.Tales
 		static public ConnectionManager Instance;
 
         public int numOfPlayers;
-        public int[] initialRoll;
         public GameObject TurnManager;
         public GameObject playerObject;
         public GameObject[] players;
-        public GameObject[] playerOrder;
+        public int[] playerOrder;
+        public int[] playerIDs;
+        public int[] initialRolls;
+        public int[] playerScores;
         public Vector3 playerPosition;
+        public Quaternion playerRotation;
 
-		#endregion
+        #endregion
 
-		#region Private Variables
+        #region Private Variables
 
-		private GameObject instance;
+        private GameObject instance;
         int Pcount = 0;
         int temp;
-        bool orderDecided;
+        int tempPlayer;
+        GameObject tempPlayerO;
+        bool orderDecided = false;
+        bool gameStart = false;
+        GameObject Timer;
 
 		#endregion
 
@@ -48,8 +56,9 @@ namespace NRN.Tales
 				SceneManager.LoadScene ("Level1");
 				return;
 			}
+            Timer = GameObject.FindGameObjectWithTag("Timer");
 
-			if (playerObject == null) 
+            if (playerObject == null) 
 			{
 				Debug.LogError ("<Color=Red><b>Missing</b></Color> playerObject is Missing. Please assign it in 'ConnectionManager' player object.", this);
 			} 
@@ -61,23 +70,138 @@ namespace NRN.Tales
                     //playerPosition = GameObject.Find("Map Generator").GetComponent<FileIO>().GetPlayerSPostion();
                     playerPosition = new Vector3 (10.0f, 1.25f, 0.0f);
 					PhotonNetwork.Instantiate (this.playerObject.name, playerPosition, Quaternion.identity, 0);
-                    Pcount++;
+                    //Pcount++;
 				} 
 				else 
 				{
 					Debug.Log ("Ignoring Scene Load" + SceneManagerHelper.ActiveSceneName);
 				}
 			}
-		}
-		
-		// Update is called once per frame
-		void Update () 
+
+            Invoke("GetPlayersAndIDs", 1.0f);
+            Invoke("DecidePlayerOrder", 3.0f);
+            gameStart = true;
+        }
+
+        void GetPlayersAndIDs()
+        {
+            //Get Each of the Players
+            players = GameObject.FindGameObjectsWithTag("Player");
+            numOfPlayers = players.Length;
+            playerIDs = new int[numOfPlayers];
+            initialRolls = new int[numOfPlayers];
+            playerScores = new int[numOfPlayers];
+            for (int i = 0; i < players.Length; i++)
+            {
+                playerIDs[i] = players[i].GetComponent<PlayerMovement>().playerID;
+            }
+        }
+
+        void DecidePlayerOrder()
+        {
+            //Compare their die score
+            //order from highest to lowest for TurnHandler
+            playerOrder = OrderRollValues();
+
+            for (int i = 0; i < playerOrder.Length; i++)
+            {
+                Debug.Log(playerOrder[i]);
+            }
+            if (orderDecided == true)
+            {
+                Invoke("ActivateTurnManager", 4.0f);
+            }
+        }
+
+        void ActivateTurnManager()
+        {
+            TurnManager.SetActive(true);
+        }
+
+        int[] OrderRollValues()
+        {
+            //for (int i = 0; i < initialRolls.Length; i++)
+            //{
+            //    for (int j = i + 1; j < initialRolls.Length; j++)
+            //    {
+            //        if (initialRolls[i] < initialRolls[j])
+            //        {
+            //            Debug.Log("Player position: " + i + " PlayerID: " + playerIDs[i] + " Their Roll: " + initialRolls[i]);
+            //            temp = initialRolls[j];
+            //            tempPlayer = playerIDs[j];
+            //            initialRolls[j] = initialRolls[i];
+            //            playerIDs[j] = playerIDs[i];
+            //            initialRolls[i] = temp;
+            //            playerIDs[i] = tempPlayer;
+            //            Debug.Log("Player position: " + i + " PlayerID: " + playerIDs[i] + " Their Roll: " + initialRolls[i]);
+            //        }
+            //    }
+            //}
+
+            orderDecided = true;
+
+            return playerIDs;
+        }
+
+        public int[] GetPlayerOrder()
+        {
+            return playerOrder;
+        }
+
+        void OrderScores ()
+        {
+            for (int i = 0; i < playerScores.Length; i++)
+            {
+                for (int j = i + 1; j < playerScores.Length; j++)
+                {
+                    if (playerScores[i] < playerScores[j])
+                    {
+                        Debug.Log("Player position: " + i + " PlayerID: " + players[i] + " Their Roll: " + playerScores[i]);
+                        temp = playerScores[j];
+                        tempPlayerO = players[j];
+                        playerScores[j] = playerScores[i];
+                        players[j] = players[i];
+                        playerScores[i] = temp;
+                        players[i] = tempPlayerO;
+                        Debug.Log("Player position: " + i + " PlayerID: " + players[i] + " Their Roll: " + playerScores[i]);
+                    }
+                }
+            }
+        }
+
+        // Update is called once per frame
+        void Update () 
 		{
+            if (gameStart == true)
+            {
+                if (Timer.activeSelf == true)
+                {
+                    if (Timer.GetComponent<Text>().text == "0 : 00")
+                    {
+                        for (int i = 0; i < players.Length; i++)
+                        {
+                            players[i].GetComponent<PlayerMovement>().ApplyCoinsValue();
+                            playerScores[i] = players[i].GetComponent<PlayerMovement>().GetScore();
+                            players[i].GetComponent<PlayerMovement>().reachedEnd = true;
+                            TurnManager.SetActive(false);
+                            OrderScores();
+                            players[i].GetComponent<PlayerMovement>().leaderboard.SetActive(true);
+                            players[i].GetComponent<PlayerMovement>().playerLis.GetComponent<Text>().text += players[i].GetComponent<PlayerMovement>().username + System.Environment.NewLine;
+                            players[i].GetComponent<PlayerMovement>().scoreList.GetComponent<Text>().text += "" + playerScores[i] + System.Environment.NewLine;
+                            players[i].GetComponent<PlayerMovement>().Winner.GetComponent<Text>().text = players[i].GetComponent<PlayerMovement>().username + " is the winner!";
+                        }
+                        gameStart = false;
+                    }
+                }
+            }
+
 			if(Input.GetKeyDown(KeyCode.Escape))
 			{
 				QuitApplication ();
 			}
 		}
+
+
 
         public void OnPhotonPlayerConnected(PhotonPlayer other)
         {
@@ -92,7 +216,7 @@ namespace NRN.Tales
             //	}
         }
 
-    public virtual void OnLeftRoom()
+        public virtual void OnLeftRoom()
 		{
 			SceneManager.LoadScene ("LogInRegister_UI");
 		}
@@ -101,6 +225,7 @@ namespace NRN.Tales
 		{
 			PhotonNetwork.LeaveRoom ();
 		}
+
 		public void QuitApplication()
 		{
 			Application.Quit ();

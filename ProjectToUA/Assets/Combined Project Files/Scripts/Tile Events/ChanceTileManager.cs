@@ -111,7 +111,7 @@ public class ChanceTileManager : MonoBehaviour
 		{
 		case "GoodCard_1":
 			
-			coinObj.coinValue += 50f;
+			coinObj.coinValue += 50;
 
 			//Debug.Log ("G1 works");
 			isCoinChance = true;
@@ -136,18 +136,18 @@ public class ChanceTileManager : MonoBehaviour
 
 		case "BadCard_1":
 			
-			coinObj.coinValue -= 25f;
+			coinObj.coinValue -= 25;
 			isCoinChance = true;
 			StartCoroutine (WaitForPanel ());
 			break;
 		case "BadCard_2":
-			coinObj.coinValue -= 5f;
+			coinObj.coinValue -= 5;
 			isCoinChance = true;
 			StartCoroutine (WaitForPanel ());
 			break;
 		case "BadCard_3":
 			
-			coinObj.coinValue -= 10f;
+			coinObj.coinValue -= 10;
 			isCoinChance = true;
 			StartCoroutine (WaitForPanel ());
 			break;

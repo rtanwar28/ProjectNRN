@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class CoinManager : MonoBehaviour 
 {
-	public float coinValue;
+	public int coinValue;
 	public Text coinValText;
 
 
 	// Use this for initialization
 	void Start () 
 	{
-		coinValue = 100f;
+		coinValue = 100;
 
 	}
 	

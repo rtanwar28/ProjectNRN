@@ -34,7 +34,7 @@ namespace NRN.Tales
         //public String[] playerInfo;
         RoomOptions roomDeets;
 
-		public byte maxPlayersPerRoom = 4;
+		public byte maxPlayersPerRoom = 2;
 
         //int i = 0;
 
@@ -340,32 +340,16 @@ namespace NRN.Tales
                 {
                     roomText.text += "    " + PhotonNetwork.playerList[i].ID + "         " + PhotonNetwork.playerList[i].NickName + System.Environment.NewLine;
                 }
-            //    for(int x = 0; x < playersInfo.Length; x++)
-            //    {
-            //        playersInfo[PhotonNetwork.player.ID - 1][x] = playerInfo[x];
-            //    }
-            //    roomText.text = "";
-            //    for (int i = 0; i < playersInfo.Length; i++)
-            //    {
-            //        for (int j = 0; j < playerInfo.Length; j++)
-            //        {
-            //            roomText.text += " " + playersInfo[i][j];
-            //        }
-            //        roomText.text += System.Environment.NewLine;
-            //    }
-            //    for (int y = 0; y < playersInfo.Length; y++)
-            //    {
-            //        if (playersInfo[y][3] == "ready")
-            //        {
-            //            readyCount++;
-            //        }
-            //    }
-            //    if( readyCount == 4)
-            //    {
-            //        isReady = true;
-            //    }
-            //    readyCount = 0;
             }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                QuitApplication();
+            }
+        }
+
+        public void QuitApplication()
+        {
+            Application.Quit();
         }
     }
 }

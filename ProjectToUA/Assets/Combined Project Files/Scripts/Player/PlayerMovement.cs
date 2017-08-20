@@ -6,7 +6,20 @@ using UnityEngine.UI;
 public class PlayerMovement : Photon.PunBehaviour
 {
 
-	FileIO fileIOObj;
+    //To Be Moved to Player Details/Network
+    public int playerID;
+    public int initialRoll;
+    public GameObject GameM;
+    public GameObject leaderboard, playerLis, scoreList, Winner;
+    int[] diceSValue;
+    public bool playerTurn = false;
+    public bool reachedEnd = false;
+    public bool wonFight = false;
+    public bool lostFight = false;
+    public string username;
+    public Sprite IDOne, IDTwo, IDThree, IDFour;
+
+    FileIO fileIOObj;
 	DiceRoll diceObj;
 
 	Vector3 playerPos, playerDest, tileDestination;
@@ -25,24 +38,55 @@ public class PlayerMovement : Photon.PunBehaviour
     public static GameObject LocalPlayerInstance;
     public GameObject mainCamera;
 
-    Text timerTxt;
+    GameObject timerTxt, usernameDisplay, IDDisplay, scoreText, ScoreManager, coinValue;
+    public int score;
 
     public void Awake()
     {
+        GameM = GameObject.FindGameObjectWithTag("GameManager");
+        timerTxt = GameObject.FindGameObjectWithTag("Timer");
+        usernameDisplay = GameObject.FindGameObjectWithTag("user");
+        IDDisplay = GameObject.FindGameObjectWithTag("ID");
+        ScoreManager = GameObject.FindGameObjectWithTag("ScoreManager");
+        scoreText = GameObject.FindGameObjectWithTag("Score");
+        coinValue = GameObject.FindGameObjectWithTag("Coin");
+        leaderboard = GameObject.FindGameObjectWithTag("Leaderboard");
+        playerLis = GameObject.FindGameObjectWithTag("PlayList");
+        scoreList = GameObject.FindGameObjectWithTag("ScoreList");
+        Winner = GameObject.FindGameObjectWithTag("WinnerAnnouncement");
+
         if (photonView.isMine)
         {
             LocalPlayerInstance = gameObject;
             mainCamera = GameObject.FindGameObjectWithTag("playerCam");
             mainCamera.transform.parent = this.gameObject.transform;
+            timerTxt.SetActive((false));
+            leaderboard.SetActive(false);
+            isTimerActive = false;
+
+            playerID = PhotonNetwork.player.ID;
+            username = PhotonNetwork.player.NickName;
+
+            usernameDisplay.GetComponent<Text>().text = username;
+            if(playerID == 1)
+            {
+                IDDisplay.GetComponent<Image>().sprite = IDOne;
+            }
+            else if (playerID == 2)
+            {
+                IDDisplay.GetComponent<Image>().sprite = IDTwo;
+            }
+            else if (playerID == 3)
+            {
+                IDDisplay.GetComponent<Image>().sprite = IDThree;
+            }
+            else if (playerID == 4)
+            {
+                IDDisplay.GetComponent<Image>().sprite = IDFour;
+            }
         }
 
         DontDestroyOnLoad(gameObject);
-
-        timerTxt = GameObject.Find("Timer").GetComponent<Text>();
-
-        timerTxt.gameObject.SetActive((false));
-
-        isTimerActive = false;
     }
 
     void Start()
@@ -63,27 +107,50 @@ public class PlayerMovement : Photon.PunBehaviour
             canMove = false;
             leftRot = false;
             rightRot = false;
+            //Invoke("InitialRoll", 3.0f);
             //playerMoveHistory = new Stack<Transform>();
         }
-	}
+    }
 
     protected void Update()
 
     {
         if (photonView.isMine)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-                RollDice();
+            if (reachedEnd == false)
+            {
+                if (playerTurn == true)
+                {
+                    if (Input.GetKeyDown(KeyCode.Space))
+                        RollDice();
 
-            if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKeyDown(KeyCode.W)))
-                MoveForward();
+                    if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKeyDown(KeyCode.W)))
+                        MoveForward();
 
-            else if (Input.GetKeyDown(KeyCode.RightArrow) || (Input.GetKeyDown(KeyCode.D)))
-                MoveRight();
+                    else if (Input.GetKeyDown(KeyCode.RightArrow) || (Input.GetKeyDown(KeyCode.D)))
+                        MoveRight();
 
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) || (Input.GetKeyDown(KeyCode.A)))
-                MoveLeft();
+                    else if (Input.GetKeyDown(KeyCode.LeftArrow) || (Input.GetKeyDown(KeyCode.A)))
+                        MoveLeft();
+                }
+            }
 
+            if (wonFight == true)
+            {
+                score = ScoreManager.GetComponent<ScoreManager>().AffectScore("Won Fight", score);
+                wonFight = false;
+            }
+            else if (lostFight == true)
+            {
+                score = ScoreManager.GetComponent<ScoreManager>().AffectScore("Lost Fight", score);
+                lostFight = false;
+            }
+            scoreText.GetComponent<Text>().text = "" + score;
+            
+            if(isTimerActive == true)
+            {
+                timerTxt.gameObject.SetActive((true));
+            }
         }
     }
 
@@ -262,11 +329,13 @@ public class PlayerMovement : Photon.PunBehaviour
                             {
                                 diceObj.diceRolledB--;
                                 diceObj.DisplayDice(diceObj.diceRolledA, diceObj.diceRolledB);
+                                score = ScoreManager.GetComponent<ScoreManager>().AffectScore("Tile Movement", score);
                             }
                             else
                             {
                                 diceObj.diceRolledA--;
                                 diceObj.DisplayDice(diceObj.diceRolledA, diceObj.diceRolledB);
+                                score = ScoreManager.GetComponent<ScoreManager>().AffectScore("Tile Movement", score);
                             }
                         }
                     }
@@ -287,14 +356,39 @@ public class PlayerMovement : Photon.PunBehaviour
             if (diceObj.diceTotal == 0 && extraMoveCount == 0)
             {
                 canRoll = true;
+                playerTurn = false;
             }
         }
 	}
 
-    void CalledOnLevelLoaded(int level)
+    public void ApplyCoinsValue()
     {
-
+        score += coinValue.GetComponent<CoinManager>().coinValue * 2;
     }
+
+    public int GetScore()
+    {
+        return score;
+    }
+
+    //public void InitialRoll()
+    //{
+    //    initialRoll = diceObj.StartRoll();
+    //    this.photonView.RPC("Rolled", PhotonTargets.All, initialRoll, playerID);
+    //    //return initialRoll;
+    //}
+
+    //[PunRPC]
+    //public void Rolled(int tDiceValue, int playerID)
+    //{
+    //    for (int i = 0; i < GameM.GetComponent<NRN.Tales.ConnectionManager>().playerIDs.Length; i++)
+    //    {
+    //        if (GameM.GetComponent<NRN.Tales.ConnectionManager>().playerIDs[i] == playerID)
+    //        {
+    //            GameM.GetComponent<NRN.Tales.ConnectionManager>().initialRolls[i] = tDiceValue;
+    //        }
+    //    }
+    //}
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -302,23 +396,37 @@ public class PlayerMovement : Photon.PunBehaviour
         {
             Vector3 pos = transform.position;
             stream.Serialize(ref pos);
+            stream.SendNext(playerID);
+            stream.SendNext(playerTurn);
+            stream.SendNext(reachedEnd);
+            stream.SendNext(isTimerActive);
         }
         else
         {
             Vector3 pos = Vector3.zero;
             stream.Serialize(ref pos);
+            this.playerID = (int)stream.ReceiveNext();
+            this.playerTurn = (bool)stream.ReceiveNext();
+            this.reachedEnd = (bool)stream.ReceiveNext();
+            this.isTimerActive = (bool)stream.ReceiveNext();
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "FinishPoint" && !isTimerActive)
+        if (other.gameObject.name == "FinishPoint")
         {
-            timerTxt.gameObject.SetActive((true));
+            if (!isTimerActive)
+            {
+                timerTxt.gameObject.SetActive((true));
 
-            isTimerActive = true;
+                isTimerActive = true;
+                score = ScoreManager.GetComponent<ScoreManager>().AffectScore("Reached End", score);
 
-            diceObj.GameEnd();
+                diceObj.GameEnd();
+            }
+            reachedEnd = true;
+            playerTurn = false;
         }
     }
 }
