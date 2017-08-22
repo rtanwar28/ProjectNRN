@@ -24,10 +24,10 @@ public class PlayerMovement : Photon.PunBehaviour
 
 	Vector3 playerPos, playerDest, tileDestination;
 
-    public bool canMove, leftRot, rightRot, isTimerActive;
+    public bool canMove, leftRot, rightRot, isTimerActive, isRotating;
 	public bool canRoll;
 
-	public int extraMoveCount;
+    public int extraMoveCount;
 
 	//public Stack<Transform> playerMoveHistory;
 
@@ -107,9 +107,14 @@ public class PlayerMovement : Photon.PunBehaviour
             canMove = false;
             leftRot = false;
             rightRot = false;
+
+            isRotating = false;
+         
             //Invoke("InitialRoll", 3.0f);
             //playerMoveHistory = new Stack<Transform>();
         }
+
+           
     }
 
     protected void Update()
@@ -127,10 +132,10 @@ public class PlayerMovement : Photon.PunBehaviour
                     if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKeyDown(KeyCode.W)))
                         MoveForward();
 
-                    else if (Input.GetKeyDown(KeyCode.RightArrow) || (Input.GetKeyDown(KeyCode.D)))
+                    else if ((Input.GetKeyDown(KeyCode.RightArrow) || (Input.GetKeyDown(KeyCode.D))) && !isRotating)
                         MoveRight();
 
-                    else if (Input.GetKeyDown(KeyCode.LeftArrow) || (Input.GetKeyDown(KeyCode.A)))
+                    else if ((Input.GetKeyDown(KeyCode.LeftArrow) || (Input.GetKeyDown(KeyCode.A))) && !isRotating)
                         MoveLeft();
                 }
             }
@@ -192,32 +197,54 @@ public class PlayerMovement : Photon.PunBehaviour
 
     public void MoveRight()
     {
-        if (photonView.isMine)
-        {
+        //if (photonView.isMine)
+        //{
             if (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM)
             {
+                isRotating = true;
+                Debug.Log(isRotating);
                 StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
                 if (!leftRot)
                     rightRot = true;
                 leftRot = false;
+                
+
+                //if (this.transform.rotation == Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f))
+                //{
+                //	Debug.Log(this.transform.rotation);
+                //	Debug.Log(Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f));
+                //	isRotating = false;
+                //}
+
             }
-        }
+
+        //}
     }
 
     public void MoveLeft()
     {
-        if (photonView.isMine)
-        {
+        //if (photonView.isMine)
+        //{
             if (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM)
             {
+                isRotating = true;
+			    Debug.Log(isRotating);
                 StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
                 if (!rightRot)
                     leftRot = true;
                 rightRot = false;
-            }
-        }
-    }
 
+				//if (this.transform.rotation == Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f))
+				//{
+				//	Debug.Log(this.transform.rotation);
+				//	Debug.Log(Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f));
+				//	isRotating = false;
+				//}
+
+            }
+
+        //}
+    }
 
  //   void Update()
 	//{
@@ -280,8 +307,9 @@ public class PlayerMovement : Photon.PunBehaviour
 
 	IEnumerator RotatePlayer (Quaternion startRot, Quaternion newRot)
 	{
-        if (photonView.isMine)
-        {
+       
+        //if (photonView.isMine)
+        //{
             float time = 0.7f;
             float i = 0f;
             float rate = 1f / time;
@@ -291,7 +319,10 @@ public class PlayerMovement : Photon.PunBehaviour
                 this.transform.rotation = Quaternion.Lerp(startRot, newRot, i);
                 yield return null;
             }
-        }
+
+        isRotating = false;
+
+        //}
 	}
 
 	void PlayerMove (Vector3 playerDestination)
