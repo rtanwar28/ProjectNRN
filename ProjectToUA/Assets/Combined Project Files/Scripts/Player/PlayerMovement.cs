@@ -9,6 +9,7 @@ public class PlayerMovement : Photon.PunBehaviour
     //To Be Moved to Player Details/Network
     public int playerID;
     public int initialRoll;
+    public int health, strength, intelligence, dexterity;
     public GameObject GameM;
     public GameObject leaderboard, playerLis, scoreList, Winner;
     int[] diceSValue;

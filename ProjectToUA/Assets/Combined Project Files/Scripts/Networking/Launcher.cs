@@ -13,21 +13,12 @@ namespace NRN.Tales
 	public class Launcher : Photon.PunBehaviour 
 	{
 
-        public GameObject namePanel;    
+        public GameObject namePanel;
 
-        public Text feedbackText;       
-        public Text serverText;         
-        public Text roomText;           
-        public Text user;               
-        public Text roomHeading;        
-        public InputField cServerName;
-        public InputField jServerName;
-        public GameObject LogInPanels;  
-        public GameObject FBTexts;
-        public GameObject MainMenu;     
-        public GameObject Lobby;        
-        public GameObject Room;         
-        public GameObject loginMenu, registerMenu;
+        public Text feedbackText, serverText, roomText, user, roomHeading;
+        public InputField cServerName, jServerName;
+        public GameObject LogInPanels, FBTexts;
+        public GameObject MainMenu, Lobby, Room, loginMenu, registerMenu, csMenu;
 
         public RoomInfo [] lobbyRooms;
         //public String[][] playersInfo;
@@ -212,9 +203,9 @@ namespace NRN.Tales
             //i = 0;
         }
 
-        public void ReadyUp()
+        public void GetCharNameFromCS()
         {
-            //playerInfo[3] = "ready";
+
         }
 
         public void LoadLevel()
