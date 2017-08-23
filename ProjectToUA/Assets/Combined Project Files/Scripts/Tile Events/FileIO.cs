@@ -47,8 +47,39 @@ public class FileIO : MonoBehaviour
         //Creating a stream reader in order to read the contents in the text file
         sr = new StreamReader(filePath + "MapEditor.txt");
 
-        // Read the context from the textfile
-        string line = sr.ReadToEnd();
+//        /////////////////////////////////////////////////
+//        ///////////////FOR ANDROID //////////////////////
+//        //        https://www.snip2code.com/Snippet/14142/Get-Unity-StreamingAssets-file-path-with
+//        /////////////////////////////////////////////////
+//#if UNITY_ANDROID || !UNITY_STANDALONE
+//        string myDataPath = "";
+//        //if (Application.platform == RuntimePlatform.Android)
+//        //{
+//            string tempPath = Path.Combine(Application.streamingAssetsPath, "MapEditor.bytes");
+
+//            //Android only uses WWW to read file
+//            WWW myReader = new WWW(tempPath);
+
+//            //the download is not yet finished
+//            while (!myReader.isDone) { }
+
+//            string realPath = string.Format("{0}/{1}", Application.persistentDataPath, "MapEditor");
+
+//            //returns contents of the fetched web page as Byte array
+//            File.WriteAllBytes(realPath, myReader.bytes);
+//            myDataPath = realPath;
+
+//            StreamReader sr = new StreamReader(realPath);
+//            string lineStr;
+//            while ((lineStr = sr.ReadLine()) != null)
+//            //}
+//#endif
+//            /////////////////////////////////////////////////
+//            /////////////////////////////////////////////////
+//            /////////////////////////////////////////////////
+
+            // Read the context from the textfile
+            string line = sr.ReadToEnd();
 
         // Convert the string line into a character array
         char[] test = line.ToCharArray();

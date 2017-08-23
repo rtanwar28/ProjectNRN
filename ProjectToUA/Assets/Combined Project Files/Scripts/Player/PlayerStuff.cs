@@ -127,6 +127,135 @@ public class PlayerStuff : MonoBehaviour {
 
     }
 
+    public void SelectCharacter()
+    {
+        
+    }
+
+
+    /*
+     * public void SelectPlayer()
+
+	{
+
+		// If a character is in scene
+
+		if(charIsActive)
+
+		{
+
+			activeChar = GameObject.FindGameObjectWithTag ("Character");
+
+			Destroy (activeChar);
+
+			charIsActive = false;
+
+
+
+			oldRotation = activeChar.transform.eulerAngles;
+
+		}
+
+
+
+		// Getting the name of the gameobject currently selected in the Event System.
+
+		string btnName = EventSystem.current.currentSelectedGameObject.transform.name;
+
+
+
+		// Checking if the button clicked, its string name exists in characterBtn array.
+
+		for(int i=0;i<characterBtn.Length;i++)
+
+		{
+
+			// If the name match then pass the index value.
+
+			if(btnName == characterBtn[i].name)
+
+			{
+
+				SpawnCharacter (i);
+
+			}
+
+		}
+
+	}
+
+
+
+	// To spawn the character on the platform
+
+	public void SpawnCharacter(int indexValue)
+
+	{
+
+		index = indexValue;
+
+		// Instantiate character and setting bool value to true.
+
+		Instantiate (characterArray [indexValue], spawnPoint.position, Quaternion.Euler(oldRotation));
+
+		charIsActive = true;
+
+		playerSelected = characterArray [indexValue];
+
+		passChar = ActiveCharScene [indexValue];
+
+		playerSelected.transform.eulerAngles = oldRotation;
+
+	}
+
+
+
+	// To go to a scene.
+
+	public void LoadScene(string sceneName)
+
+	{
+
+		if (charIsActive)
+
+		{
+
+			SceneManager.LoadScene (sceneName);
+
+		}
+
+	}
+     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //using CoRoutines to send information to the server, so that we can wait for a response
     private IEnumerator Stats(WWW _w)
     {
