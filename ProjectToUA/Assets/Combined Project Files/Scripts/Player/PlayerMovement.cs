@@ -203,19 +203,12 @@ public class PlayerMovement : Photon.PunBehaviour
             if (diceObj.diceTotal != 0 && !rightRot || extraMoveCount != 0 || extraM)
             {
                 isRotating = true;
-                Debug.Log(isRotating);
+
                 StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f)));
                 if (!leftRot)
                     rightRot = true;
                 leftRot = false;
-                
-
-                //if (this.transform.rotation == Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f))
-                //{
-                //	Debug.Log(this.transform.rotation);
-                //	Debug.Log(Quaternion.Euler(0f, this.transform.eulerAngles.y + 90f, 0f));
-                //	isRotating = false;
-                //}
+               
 
             }
 
@@ -229,18 +222,11 @@ public class PlayerMovement : Photon.PunBehaviour
             if (diceObj.diceTotal != 0 && !leftRot || extraMoveCount != 0 || extraM)
             {
                 isRotating = true;
-			    Debug.Log(isRotating);
+
                 StartCoroutine(RotatePlayer(this.transform.rotation, Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f)));
                 if (!rightRot)
                     leftRot = true;
                 rightRot = false;
-
-				//if (this.transform.rotation == Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f))
-				//{
-				//	Debug.Log(this.transform.rotation);
-				//	Debug.Log(Quaternion.Euler(0f, this.transform.eulerAngles.y - 90f, 0f));
-				//	isRotating = false;
-				//}
 
             }
 
