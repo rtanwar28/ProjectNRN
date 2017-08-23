@@ -12,7 +12,8 @@ public class ChanceTileManager : MonoBehaviour
 	GameObject gCard, bCard, cp;
 	string activeCard;
 
-	bool isGood, isBad, isCoinChance;
+	bool isGood, isBad, isCoinChance, isExtra;
+    public bool coroutineEnded;
 
 	// Reference to the CoinManager script.
 	CoinManager coinObj;
@@ -33,6 +34,9 @@ public class ChanceTileManager : MonoBehaviour
 		isGood = false;
 		isBad = false;
 		isCoinChance = false;
+        isExtra = false;
+
+        coroutineEnded = false;
 	}
 
     // Generate a random good card to display it.
@@ -40,7 +44,7 @@ public class ChanceTileManager : MonoBehaviour
 	{
 		if(activeCard == null)
 		{
-			int random = Random.Range (0, 3);
+            int random = Random.Range (0, 3);
 
 			gCard = goodCards [random];
 	
@@ -86,7 +90,7 @@ public class ChanceTileManager : MonoBehaviour
 		Debug.Log ("In coroutine");
 		if(isGood)
 		{
-			gCard.SetActive (false);
+            gCard.SetActive(false);
 		}
 		else if(isBad)
 		{
@@ -99,8 +103,10 @@ public class ChanceTileManager : MonoBehaviour
 			isCoinChance = false;
 		}
 
+
         playerMoveObj = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
         playerMoveObj.canRoll = true;
+        coroutineEnded = true;
 
     }
 
@@ -120,17 +126,15 @@ public class ChanceTileManager : MonoBehaviour
 
 		case "GoodCard_2":
 			
-			extraMoves = 2;
-			playerMoveObj = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
-			playerMoveObj.extraM = true;
+                extraMoves = 2;
+                isExtra = true;
 			StartCoroutine (WaitForPanel ());
 			break;
 
 		case "GoodCard_3":
 			
-			extraMoves = 5;
-			playerMoveObj = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
-			playerMoveObj.extraM = true;
+                extraMoves = 5;
+                isExtra = true;
 			StartCoroutine (WaitForPanel ());
 			break;
 
@@ -156,6 +160,14 @@ public class ChanceTileManager : MonoBehaviour
 		}
         // Setting the active card to null.
 		activeCard = null;
+
+        if(isExtra)
+        {
+            isExtra = false;
+            playerMoveObj = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+			playerMoveObj.extraM = true;
+
+        }
 	}
 
 }

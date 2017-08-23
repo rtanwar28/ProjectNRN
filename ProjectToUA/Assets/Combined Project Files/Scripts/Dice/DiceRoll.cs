@@ -53,9 +53,9 @@ public class DiceRoll : MonoBehaviour
 	{
 		diceRolledA = Random.Range (1, 7);
 		diceRolledB = Random.Range (1, 7);
-		/* Can be set for testing purposes
-        diceRolledA = 1;
-		diceRolledB = 1;*/
+		//Can be set for testing purposes
+        //diceRolledA = 3;
+		//diceRolledB = 3;
 		diceTotal = diceRolledA + diceRolledB;
 		DisplayDice (diceRolledA, diceRolledB);
 	}

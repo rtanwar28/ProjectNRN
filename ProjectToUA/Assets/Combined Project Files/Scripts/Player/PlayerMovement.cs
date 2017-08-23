@@ -123,6 +123,20 @@ public class PlayerMovement : Photon.PunBehaviour
     {
         if (photonView.isMine)
         {
+            if (extraM)
+            {
+                ctmObj = GameObject.Find("ChancePanel").GetComponent<ChanceTileManager>();
+                extraMoveCount = ctmObj.extraMoves;
+
+                if (ctmObj.coroutineEnded)
+                {
+                    
+                    ctmObj.coroutineEnded = false;
+                    ctmObj.gameObject.SetActive(false);
+                    extraM = false;
+                }
+            }
+
             if (reachedEnd == false)
             {
                 if (playerTurn == true)
@@ -190,6 +204,7 @@ public class PlayerMovement : Photon.PunBehaviour
                 playerPos = this.transform.position;
                 playerDest = playerPos + transform.forward * 2f;
                 tileDestination = new Vector3(playerDest.x, playerDest.y - 1.25f, playerDest.z);
+                Debug.Log(this.transform.position + "\n" + tileDestination);
                 PlayerMove(tileDestination);
             }
         }
@@ -328,13 +343,13 @@ public class PlayerMovement : Photon.PunBehaviour
 
                 if (canMove)
                 {
-                    if (extraM)
-                    {
-                        ctmObj = GameObject.Find("ChancePanel").GetComponent<ChanceTileManager>();
-                        extraMoveCount = ctmObj.extraMoves;
-                        ctmObj.gameObject.SetActive(false);
-                        extraM = false;
-                    }
+                    //if (extraM)
+                    //{
+                        //ctmObj = GameObject.Find("ChancePanel").GetComponent<ChanceTileManager>();
+                        //extraMoveCount = ctmObj.extraMoves;
+                        //ctmObj.gameObject.SetActive(false);
+                       // extraM = false;
+                   // }
                     //playerMoveHistory.Push (this.transform);
                     StartCoroutine(FollowPlayer(this.transform.position, playerDest));
                     canMove = false;
@@ -363,6 +378,7 @@ public class PlayerMovement : Photon.PunBehaviour
                         ctmObj.extraMoves--;
                         extraMoveCount--;
                         if (extraMoveCount == 0)
+
                             canRoll = true;
 
                     }
