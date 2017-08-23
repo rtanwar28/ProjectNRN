@@ -22,7 +22,10 @@ namespace NRN.Tales
 
         public int numOfPlayers;
         public GameObject TurnManager;
-        public GameObject playerObject;
+        public GameObject playerObjectK;
+        public GameObject playerObjectA;
+        public GameObject playerObjectW;
+        public GameObject playerObjectE;
         public GameObject[] players;
         public int[] playerOrder;
         public int[] playerIDs;
@@ -58,20 +61,37 @@ namespace NRN.Tales
 			}
             Timer = GameObject.FindGameObjectWithTag("Timer");
 
-            if (playerObject == null) 
-			{
+            if (playerObjectK == null && playerObjectA == null && playerObjectW == null && playerObjectE == null)
+            {
 				Debug.LogError ("<Color=Red><b>Missing</b></Color> playerObject is Missing. Please assign it in 'ConnectionManager' player object.", this);
 			} 
 			else 
 			{
-				if (TestPlayer.LocalPlayerInstance == null) 
+				if (PlayerMovement.LocalPlayerInstance == null) 
 				{
 					Debug.Log("We are Instantiating LocalPlayer from " + SceneManagerHelper.ActiveSceneName + " " + Pcount);
                     //playerPosition = GameObject.Find("Map Generator").GetComponent<FileIO>().GetPlayerSPostion();
                     playerPosition = new Vector3 (10.0f, 1.25f, 0.0f);
-					PhotonNetwork.Instantiate (this.playerObject.name, playerPosition, Quaternion.identity, 0);
+                    //PhotonNetwork.Instantiate (this.playerObject.name, playerPosition, Quaternion.identity, 0);
+
+                    if (PhotonNetwork.player.NickName.Contains("Knight"))
+                    {
+                        PhotonNetwork.Instantiate(this.playerObjectK.name, playerPosition, Quaternion.identity, 0);
+                    }
+                    else if (PhotonNetwork.player.NickName.Contains("Assassin"))
+                    {
+                        PhotonNetwork.Instantiate(this.playerObjectA.name, playerPosition, Quaternion.identity, 0);
+                    }
+                    else if (PhotonNetwork.player.NickName.Contains("Wizard"))
+                    {
+                        PhotonNetwork.Instantiate(this.playerObjectW.name, playerPosition, Quaternion.identity, 0);
+                    }
+                    else if (PhotonNetwork.player.NickName.Contains("Elf"))
+                    {
+                        PhotonNetwork.Instantiate(this.playerObjectE.name, playerPosition, Quaternion.identity, 0);
+                    }
                     //Pcount++;
-				} 
+                } 
 				else 
 				{
 					Debug.Log ("Ignoring Scene Load" + SceneManagerHelper.ActiveSceneName);
@@ -79,7 +99,7 @@ namespace NRN.Tales
 			}
 
             Invoke("GetPlayersAndIDs", 1.0f);
-            Invoke("DecidePlayerOrder", 3.0f);
+            Invoke("DecidePlayerOrder", 2.0f);
             gameStart = true;
         }
 
@@ -109,7 +129,7 @@ namespace NRN.Tales
             }
             if (orderDecided == true)
             {
-                Invoke("ActivateTurnManager", 4.0f);
+                Invoke("ActivateTurnManager", 3.0f);
             }
         }
 
@@ -190,6 +210,7 @@ namespace NRN.Tales
                             players[i].GetComponent<PlayerMovement>().scoreList.GetComponent<Text>().text += "" + playerScores[i] + System.Environment.NewLine;
                             players[i].GetComponent<PlayerMovement>().Winner.GetComponent<Text>().text = players[i].GetComponent<PlayerMovement>().username + " is the winner!";
                         }
+                        players[0].GetComponent<PlayerMovement>().Winner.GetComponent<Text>().text = players[0].GetComponent<PlayerMovement>().username + " is the winner!";
                         gameStart = false;
                     }
                 }

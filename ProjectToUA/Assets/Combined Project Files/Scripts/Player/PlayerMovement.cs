@@ -434,6 +434,7 @@ public class PlayerMovement : Photon.PunBehaviour
             stream.SendNext(playerTurn);
             stream.SendNext(reachedEnd);
             stream.SendNext(isTimerActive);
+            stream.SendNext(score);
         }
         else
         {
@@ -443,6 +444,7 @@ public class PlayerMovement : Photon.PunBehaviour
             this.playerTurn = (bool)stream.ReceiveNext();
             this.reachedEnd = (bool)stream.ReceiveNext();
             this.isTimerActive = (bool)stream.ReceiveNext();
+            this.score = (int)stream.ReceiveNext();
         }
     }
 

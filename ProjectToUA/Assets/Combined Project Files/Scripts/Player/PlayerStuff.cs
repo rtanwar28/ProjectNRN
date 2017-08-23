@@ -8,6 +8,7 @@ public class PlayerStuff : MonoBehaviour {
     public Text messageText, charnameText;
 
     private string charName, healthStr, dexStr, magStr, atkStr, cName;
+    public string currentSelection;
 
     public GameObject[] character = new GameObject[4];
     GameObject currentGO, oldGO;
@@ -120,6 +121,7 @@ public class PlayerStuff : MonoBehaviour {
             }
         }
 
+        currentSelection = cName;
         WWWForm form = new WWWForm();
         form.AddField("charname", cName);
         WWW w = new WWW("https://atoua.000webhostapp.com/playerStats.php", form);
@@ -127,9 +129,9 @@ public class PlayerStuff : MonoBehaviour {
 
     }
 
-    public void SelectCharacter()
+    public string ReturnCurrentName()
     {
-        
+        return currentSelection;
     }
 
 

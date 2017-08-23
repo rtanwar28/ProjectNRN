@@ -33,6 +33,7 @@ namespace NRN.Tales
         bool isReady;
 		string _gameV = "1";
         string playerUsername;
+        string charaName;
         int readyCount;
 			
 		void Awake()
@@ -58,14 +59,16 @@ namespace NRN.Tales
             Room = GameObject.Find("Room");
             loginMenu = GameObject.Find("LoginMenu");
             registerMenu = GameObject.Find("RegisterMenu");
+            csMenu = GameObject.Find("CharacterSelection");
 
-            
+
             MainMenu.gameObject.SetActive(false);
             Lobby.gameObject.SetActive(false);
             Room.gameObject.SetActive(false);
             loginMenu.SetActive(true);
             FBTexts.gameObject.SetActive(true);
             registerMenu.SetActive(false);
+            csMenu.SetActive(false);
 
         }
 
@@ -73,7 +76,7 @@ namespace NRN.Tales
         {
             roomDeets = new RoomOptions();
             roomDeets.IsVisible = true;
-            roomDeets.MaxPlayers = 4;
+            roomDeets.MaxPlayers = 2;
             //playerInfo = new String[4];
             //playersInfo = new String[roomDeets.MaxPlayers][];
             //playersInfo[0] = new String[4];
@@ -88,6 +91,7 @@ namespace NRN.Tales
 			feedbackText.text = "";
 
 			isConnecting = true;
+            playerUsername = username;
             PhotonNetwork.playerName = username;
             user.text = username;
 			LogInPanels.SetActive (false);
@@ -165,6 +169,7 @@ namespace NRN.Tales
             //    playersInfo[PhotonNetwork.player.ID - 1][x] = "";
             //}
             PhotonNetwork.LeaveRoom();
+            cServerName.text = "";
             jServerName.text = "";
             Lobby.SetActive(true);
             Room.SetActive(false);
@@ -205,14 +210,24 @@ namespace NRN.Tales
 
         public void GetCharNameFromCS()
         {
-
+            charaName = csMenu.GetComponent<PlayerStuff>().ReturnCurrentName();
+            if (charaName != "")
+            {
+                PhotonNetwork.playerName = charaName + " " + playerUsername;
+                csMenu.SetActive(false);
+                Lobby.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("Character not selected.");
+            }
         }
 
         public void LoadLevel()
         {
             if (PhotonNetwork.playerList.Length >= 1)//roomDeets.MaxPlayers)
             {
-                Room.SetActive(false);
+                
                 PhotonNetwork.room.IsOpen = false;
                 PhotonNetwork.room.IsVisible = false;
                 foreach (PhotonPlayer pep in PhotonNetwork.playerList)
@@ -224,6 +239,7 @@ namespace NRN.Tales
                     PhotonNetwork.LoadLevel(1);
 
                 }
+                Room.SetActive(false);
             }
             else
             {
@@ -320,6 +336,13 @@ namespace NRN.Tales
         {
             registerMenu.SetActive(false);
             loginMenu.SetActive(true);
+        }
+
+        public void LeavetheLobby()
+        {
+            Lobby.SetActive(false);
+            PhotonNetwork.playerName = playerUsername;
+            csMenu.SetActive(true);
         }
 
         void Update()
